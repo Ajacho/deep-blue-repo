@@ -1,0 +1,40 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Uxcheckmate_Main", "Uxcheckmate_Main\Uxcheckmate_Main.csproj", "{FA1C2AA9-BAC7-47CA-889E-F4E159D54D4D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nunit_Tests", "Nunit_Tests\Nunit_Tests.csproj", "{1CAC68A5-9E2F-4C85-8E73-0A8E2A49903D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Moq_Tests", "Moq_Tests\Moq_Tests.csproj", "{4FBC119A-DE43-4A5A-9E75-32066D97032E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BDD_Tests", "BDD_Tests\BDD_Tests.csproj", "{864862E8-23EA-4A0F-B852-E775B6C45D17}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{FA1C2AA9-BAC7-47CA-889E-F4E159D54D4D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FA1C2AA9-BAC7-47CA-889E-F4E159D54D4D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FA1C2AA9-BAC7-47CA-889E-F4E159D54D4D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FA1C2AA9-BAC7-47CA-889E-F4E159D54D4D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1CAC68A5-9E2F-4C85-8E73-0A8E2A49903D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1CAC68A5-9E2F-4C85-8E73-0A8E2A49903D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1CAC68A5-9E2F-4C85-8E73-0A8E2A49903D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1CAC68A5-9E2F-4C85-8E73-0A8E2A49903D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4FBC119A-DE43-4A5A-9E75-32066D97032E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4FBC119A-DE43-4A5A-9E75-32066D97032E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4FBC119A-DE43-4A5A-9E75-32066D97032E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4FBC119A-DE43-4A5A-9E75-32066D97032E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{864862E8-23EA-4A0F-B852-E775B6C45D17}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{864862E8-23EA-4A0F-B852-E775B6C45D17}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{864862E8-23EA-4A0F-B852-E775B6C45D17}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{864862E8-23EA-4A0F-B852-E775B6C45D17}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
