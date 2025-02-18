@@ -1,31 +1,42 @@
-html {
-  font-size: 14px;
+/* Light Mode (Default) */
+:root {
+  --bg-color: #ffffff;
+  --text-color: #000000;
+  --nav-bg: #f8f9fa;
+  --nav-text: #000000;
 }
 
-@media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
+/* Dark Mode */
+.dark-theme {
+  --bg-color: #121212;
+  --text-color: #e0e0e0;
+  --nav-bg: #1e1e1e;
+  --nav-text: #ffffff;
 }
 
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
-}
-
-html {
-  position: relative;
-  min-height: 100%;
-}
-
+/* Apply theme variables */
 body {
-  margin-bottom: 60px;
+  background-color: var(--bg-color);
+  color: var(--text-color);
 }
 
-.form-floating > .form-control-plaintext::placeholder, .form-floating > .form-control::placeholder {
-  color: var(--bs-secondary-color);
-  text-align: end;
+/* Navbar */
+.navbar {
+  background-color: var(--nav-bg) !important;
 }
 
-.form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
-  text-align: start;
+.navbar .nav-link {
+  color: var(--nav-text) !important;
+}
+
+/* Middle section should follow theme */
+.container {
+  background-color: var(--bg-color);
+  color: var(--text-color);
+}
+
+/* Footer */
+footer {
+  background-color: var(--nav-bg);
+  color: var(--nav-text);
 }

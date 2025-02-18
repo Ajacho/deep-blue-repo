@@ -1,0 +1,60 @@
+@model Tuple<IEnumerable<Uxcheckmate_Main.Models.Report>, IEnumerable<Uxcheckmate_Main.Models.Pa11yIssue>>
+
+<h1 class="text-center">UXCheckmate Analysis Reports</h1>
+
+<input type="hidden" id="analyzed-url" value="@ViewBag.AnalyzedUrl" />
+
+<div id="results-container">
+    @if (!Model.Item1.Any() && !Model.Item2.Any())
+    {
+        <div class="alert alert-success"><strong>Congrats! No issues detected. Your site is in great shape!</strong></div>
+    }
+    else
+    {
+        <h3>Analysis Results</h3>
+        <p>Total Reports: @Model.Item1.Count()</p>
+        <table class="table table-striped table-bordered">
+            <thead class="thead-dark">
+                <tr>
+                    <th>Category</th>
+                    <th>Recommendations</th>
+                </tr>
+            </thead>
+            <tbody>
+            @foreach (var report in Model.Item1)
+            {
+                <tr>
+                    <td>@(report.Category != null ? report.Category.Name : "No Category Assigned")</td>
+                    <td>@report.Recommendations</td>
+                </tr>
+            }
+            </tbody>
+        </table>
+
+        <h3>Accessibility Issues</h3>
+        <p>Total Issues: @Model.Item2.Count()</p>
+        <table class="table table-striped table-bordered">
+            <thead class="thead-dark">
+                <tr>
+                    <th>Code</th>
+                    <th>Message</th>
+                    <th>Selector</th>
+                </tr>
+            </thead>
+            <tbody>
+            @foreach (var issue in Model.Item2)
+            {
+                <tr>
+                    <td>@issue.Code</td>
+                    <td>@issue.Message</td>
+                    <td>@issue.Selector</td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    }
+</div>
+
+@section Scripts {
+    <script src="~/js/reportResults.js"></script>
+}

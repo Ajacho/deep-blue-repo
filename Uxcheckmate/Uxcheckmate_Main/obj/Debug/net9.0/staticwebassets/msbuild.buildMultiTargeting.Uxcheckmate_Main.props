@@ -1,3 +1,0 @@
-﻿<Project>
-  <Import Project="../build/Uxcheckmate_Main.props" />
-</Project>
