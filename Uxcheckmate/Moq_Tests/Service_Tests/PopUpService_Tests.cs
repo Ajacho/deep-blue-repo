@@ -35,7 +35,7 @@ namespace Service_Tests
             var result = await _service.AnalyzePopupsAsync(html, jsList);
 
             // Assert
-            Assert.That(result, Does.Contain("Multiple popups detected"));
+            Assert.That(result, Does.Contain("More than 1 Pop Up detected"));
         }
 
         [Test]

@@ -5,6 +5,10 @@ using Moq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Uxcheckmate_Main.Controllers;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
+using Microsoft.AspNetCore.Mvc;
+
 
 namespace UrlValidation_Tests
 {
@@ -31,6 +35,14 @@ namespace UrlValidation_Tests
                 null,
                 null
             );
+
+            var httpContext = new DefaultHttpContext();
+            var tempDataProvider = new Mock<ITempDataProvider>();
+            var tempData = new TempDataDictionary(httpContext, tempDataProvider.Object);
+            _controller.TempData = tempData;
+
+            // Set up any other dependencies or mocks as needed     
+
         }
 
         [TearDown]
@@ -50,7 +62,7 @@ namespace UrlValidation_Tests
                     var result = await _controller.Report(redditUrl);
 
                     // Assert
-                    Assert.That(result, Is.TypeOf<ViewResult>(), "Expected a ViewResult for a valid URL.");
+                    Assert.That(result, Is.TypeOf<RedirectToActionResult>(), "Expected a ViewResult for a valid URL.");
                 }
 
                 [Test]

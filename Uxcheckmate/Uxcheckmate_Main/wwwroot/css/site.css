@@ -131,10 +131,6 @@ Theme Switcher
   --accordian-item-text: #ffffff;
 }
 
-.dark-theme .text-muted {
-  color: #bbbbbb !important;
-}
-
 /* 
 ==================================================
 Mobile Menu
@@ -199,7 +195,7 @@ Report Loader wrapper style
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(255, 255, 255, 0.5);
+  /* background-color: rgba(255, 255, 255, 0.5); */
   display: flex;
   /* flex-direction: column; */
   align-items: center;
@@ -247,16 +243,18 @@ Report scanning wrapper style
 
 #scanningWrapper {
   position: fixed;
-  top: 0;
+  top: 51px;
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(255, 255, 255, 0.5);
+  background: var(--bg-color);
+  /* background-color: rgba(255, 255, 255, 0.8); */
   display: flex;
   align-items: center;
   justify-content: center;
   box-sizing: border-box;
   z-index: 9999; 
+  overflow-y: auto; /* Enable vertical scrolling */
 }
 
 #scanningContainer {
@@ -266,31 +264,55 @@ Report scanning wrapper style
   justify-content: center;
   text-align: center; 
   padding: 20px;
-  background-color: rgba(24, 106, 168, 0.5); 
+  margin-bottom: auto;
+  /* background-color: rgba(24, 106, 168, 0.5);  */
   /* background-color: var(--bg-color);  */
   border-radius: 10px; 
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); 
+  /* box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);  */
 }
 
-.scan-status h1, .scan-status p {
+
+
+.scan-status h1, .scan-status p, #skeleton-text {
   font-family:"DM Serif Text", serif;
-  margin: 0;
+  margin: 15px;
   padding: 10px 0;
   color: #001521;
   font-weight: bold;
 }
 
+#skeleton-text {
+  color: #ffffff;
+}
+
+
 .loading-screenshot {
   width: 600px; 
   height: 300px; 
-  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  /* background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%); */
   background-size: 200% 100%;
   animation: shimmer 1.5s infinite;
   border-radius: 10px; 
   display: flex;
   align-items: center;
   justify-content: center;
+  background-color:white
+}
 
+.placeholder-glow {
+  animation: fadeGlow 1.5s infinite;
+}
+
+@keyframes fadeGlow {
+  0% {
+      opacity: 0.5;
+  }
+  50% {
+      opacity: 1;
+  }
+  100% {
+      opacity: 0.5;
+  }
 }
 
 @keyframes shimmer {
@@ -655,6 +677,11 @@ Report Page Styling
 ==================================================
 */
 
+/* .alert-container{
+  background-color: white;
+  ;
+} */
+
 .headerRow, .designRow, .accessiblityRow{
   background-color: var(--report-bg);
   color: var(--report-text);
@@ -686,92 +713,3 @@ Report Page Styling
   color: var(--accordian-text) !important;
 }
 
-
-
-/*
-==================================================
-User Dashboard Styling
-==================================================
-*/
-
-
-
-.glass-card {
-  background: rgba(255, 255, 255, 0.256); 
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 16px;
-  backdrop-filter: blur(16px); 
-  -webkit-backdrop-filter: blur(10px);
-  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1); 
-  transition: transform 0.2s ease;
-}
-.glass-card:hover {
-  transform: translateY(-2px);
-}
-.text-subtle {
-  color: rgba(0, 0, 0, 0.884); 
-}
-.dark-theme .text-subtle {
-  color: rgba(255, 255, 255, 0.847);
-}
-.userdash-wrapper h2 {
-  font-size: 1.4rem;
-  font-weight: 600;
-}
-.userdash-wrapper h3 {
-  font-size: 1.1rem;
-  font-weight: 500;
-}
-.url-highlight {
-  font-weight: 600;
-  color: var(--text-color);
-  font-family: "Lexend", sans-serif;
-}
-
-
-
-
-/*
-==================================================
-PDF Download & Logout Buttons
-==================================================
-*/
-
-
-:root {
-  --btn-pdf-bg: #0B2C48;
-  --btn-pdf-text: #ffffff;
-  --btn-pdf-hover-bg: #153551;
-}
-.dark-theme {
-  --btn-pdf-bg: #ffffff;
-  --btn-pdf-text: #0B2C48;
-  --btn-pdf-hover-bg: #d1d1d1;
-}
-.btn-download-pdf {
-  background-color: var(--btn-pdf-bg);
-  color: var(--btn-pdf-text);
-  font-weight: 500;
-  border: none;
-  padding: 6px 12px;
-  border-radius: 8px;
-  transition: 0.3s ease;
-  text-decoration: none;
-}
-.btn-download-pdf:hover {
-  background-color: var(--btn-pdf-hover-bg);
-  color: var(--btn-pdf-text);
-}
-.logout-btn {
-  background-color: var(--btn-pdf-bg);
-  color: var(--btn-pdf-text);
-  font-weight: 500;
-  border: none;
-  padding: 8px 16px;
-  border-radius: 10px;
-  transition: 0.3s ease;
-}
-.logout-btn:hover {
-  background-color: var(--btn-pdf-hover-bg);
-  color: var(--btn-pdf-text);
-}

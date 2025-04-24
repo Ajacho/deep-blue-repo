@@ -7,4 +7,5 @@ public interface IPlaywrightScraperService
 {
     Task<ScrapedContent> ScrapeAsync(string url);
     Task<Dictionary<string, ScrapedContent>> ScrapeAcrossViewportsAsync(string url, List<(int width, int height)> viewports);
+    Task<ScrapedContent> ScrapeEverythingAsync(string url);
 }

@@ -9,5 +9,6 @@ namespace Uxcheckmate_Main.Models
         public string? Url { get; set; }
         public int Headings { get; set; }
         public int Images { get; set; }
+        public string ? Base64Screenshot { get; set; }
     }
 }

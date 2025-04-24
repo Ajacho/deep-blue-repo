@@ -1,9 +1,5 @@
 ﻿@model Uxcheckmate_Main.Models.ReportUrl
 
-@* @{
-    var screenshot = TempData["Screenshot"] as string; // Retrieve screenshot from TempData
-} *@
-
 @{
     ViewData["Title"] = "Home Page";
 }
@@ -15,7 +11,7 @@
                 <h2 id="landingSubheader">AI-Powered Insights for a Better, More Accessible Web.</h2>
                 <br><br>
                 <h3 id="landingCallToAction">Try it now!</h3>
-                <form method="post" asp-action="Report" id="urlForm">
+                <form method="post" asp-action="Report" id="urlForm" onsubmit="return handleUserUrl(event);">
                     <div class="form-group">
                         <div class="input-container">
                             <input type="text" id="urlInput" name="Url" asp-for="Url" placeholder="https://uxcheckmate.com">
@@ -25,46 +21,104 @@
                     </div>
                 </form>
                 <div id="responseMessage" class="mt-3"></div>
+            </div>   
+            <div class="col-md-6 placeholderImageCol"></div>
+                @* Image attribution: https://www.freepik.com/free-vector/low-code-development-concept-illustration_18407473.htm#fromView=search&page=3&position=2&uuid=d0353fd1-626a-4c61-a331-8e262317b95c&query=website+design+illustration *@
+                <img src="~/images/placeholder.png" alt="Illustration of people designing a website on a lifesize computer" id="placeholderImage">
+            </div>
+
+@*
+=======================================================================
+                         Skeleton Loader Section
+=======================================================================
+*@
 
                 @* Logo Loader *@
                 <div id="loaderWrapper" style="display: none;">
-                    <div id="logoContainer">
+                    @* Don't delete this yet. Need to clean this up *@
+                    @* <div id="logoContainer">
                         <img src="~/images/uxCheckmateLogo.png" alt="Loading" id="logo-img"/>
-                        <div id="logoText">Analyzing...</div>
-                    </div>
+                        <div id="logoText">Analyzing...</div> *@
                 </div>
 
-                @* Scanning website Loader *@
+               @* Scanning website Loader *@
                 <div id="scanningWrapper" style="display: none;">
                     <div id="scanningContainer">
-                        <div class="scan-status">
-                            <h1>Scanning your website...</h1>
-                            <p class="messageScanningIssues" style="display: none;">Evaluating Design Issues requirements...</p>
-                            <p class="messageScanningIssues" style="display: none;">Evaluating Accessibility requirements...</p>
-                            <p class="messageScanningIssues" style="display: none;">Evaluating Severity...</p>
-                            <p class="messageScanningIssues" style="display: none;">Evaluating Code Structure...</p>
-                            <p class="messageScanningIssues" style="display: none;">Evaluating Performance...</p>
-                            <p class="messageScanningIssues" style="display: none;">Evaluating Mobile Compatibility...</p>
-                            <p class="messageScanningIssues" style="display: none;">Evaluating Color Contrast...</p>
-                            <p class="messageScanningIssues" style="display: none;">Evaluating Keyboard Navigation...</p>
-                            <p class="messageScanningIssues" style="display: none;">Evaluating Screen Reader Support...</p>
-                            <p class="messageScanningIssues" style="display: none;">Evaluating Interactive Elements...</p>
-                            <p class="messageScanningIssues" style="display: none;">Evaluating Forms and Inputs Accessibility...</p>
-                            <p class="messageScanningIssues" style="display: none;">Evaluating Content Readability...</p>
-                            <p class="messageScanningIssues" style="display: none;">Evaluating Image Alt Text...</p>
-                            <p class="messageScanningIssues" style="display: none;">Evaluating Link Accessibility...</p>
-                            <p class="messageScanningIssues" style="display: none;">Evaluating Media and Video Accessibility...</p>
-                            <p class="messageScanningIssues" style="display: none;">Evaluating Site Responsiveness...</p>
-                        </div>
 
-                        <div class="loading-screenshot" id="screenshotPlaceholder">
-                            <div class="spinner"></div>
+                    <div id="skeletonLoader" class="container">    
+                        <div class="container">
+                            <div class="row headerRow mb-5">
+                                <div class="col-md-6">
+                                    <!-- Skeleton for Screenshot -->
+                                    <div class="placeholder-glow">
+                                        <img class="placeholder w-100" id="screenshotPreview" src="~/images/animation-loading-scan.svg" alt="Placeholder for website screenshot" style="height: 300px; border-radius: 8px;">
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <div class="placeholder-glow">
+                                        <h2><div class="scan-status"></div> </h2>
+                                        <span class="placeholder col-8"></span>
+                                    </div>
+                                    <div class="placeholder-glow">
+                                        <span class="placeholder col-6"></span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div id="reportContainer">
+                                <div class="row sortSelectRow mb-5">
+                                    <div class="col-md-8"></div>
+                                    <div class="col-md-4 sortSelectCol">
+                                        <!-- Skeleton for Sort Dropdown -->
+                                        <div class="placeholder-glow">
+                                            <span class="placeholder col-12" style="height: 38px; border-radius: 5px; display: flex; align-items: center; justify-content: center;">
+                                                <p id="skeleton-text">Categories...</p>
+                                            </span>                                        
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Skeleton for Design Issues Section -->
+                                <div class="row designRow mb-5">
+                                    <div class="report-section">
+                                        <div class="placeholder-glow mb-4">
+                                            <span class="placeholder col-4" style="height: 38px; border-radius: 5px; display: flex; align-items: center; justify-content: left;">
+                                                <h2 id="skeleton-text">Design Issues...</h2>
+                                            </span> <!-- Skeleton for 'Design Issues' header -->
+                                        </div>
+                                        <div class="placeholder-glow">
+                                            <span class="placeholder col-12 mb-2" style="height: 50px;"></span>
+                                            <span class="placeholder col-12 mb-2" style="height: 50px;"></span>
+                                            <span class="placeholder col-12 mb-2" style="height: 50px;"></span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Skeleton for Accessibility Issues Section -->
+                                <div class="row accessiblityRow mb-5">
+                                    <div class="report-section">
+                                        <div class="placeholder-glow mb-4">
+                                            <span class="placeholder col-5" style="height: 38px; border-radius: 5px; display: flex; align-items: center; justify-content: left;">
+                                                <h2 id="skeleton-text">Accessibility Issues...</h2>
+                                            </span> <!-- Skeleton for 'Accessibility Issues' header -->
+                                        </div>
+                                        <div class="placeholder-glow">
+                                            <span class="placeholder col-12 mb-2" style="height: 50px;"></span>
+                                            <span class="placeholder col-12 mb-2" style="height: 50px;"></span>
+                                            <span class="placeholder col-12 mb-2" style="height: 50px;"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                            @* <div class="spinner"></div> *@
-                    
                     </div>
-                </div> 
 
+@*
+=======================================================================
+                         URL Unreachable Section
+=======================================================================
+*@
                 @* Adding a pop up box message if the url is not reachable *@
                 <div id="customPopupMessage" class="customPopupBox" style="display: none;">
                     <div class="popupContent">
@@ -77,7 +131,7 @@
                 </div>
             </div>
             <div class="col-md-6 placeholderImageCol">
-                @*Image attribution: https://www.freepik.com/free-vector/low-code-development-concept-illustration_18407473.htm#fromView=search&page=3&position=2&uuid=d0353fd1-626a-4c61-a331-8e262317b95c&query=website+design+illustration *@
+                @* Image attribution: https://www.freepik.com/free-vector/low-code-development-concept-illustration_18407473.htm#fromView=search&page=3&position=2&uuid=d0353fd1-626a-4c61-a331-8e262317b95c&query=website+design+illustration *@
                 <img src="~/images/placeholder.png" alt="Illustration of people designing a website on a lifesize computer" id="placeholderImage">
             </div>
         </div>
@@ -341,5 +395,6 @@
 </script>
 
 @section Scripts {
+    <script src="~/js/loader.js"></script>
     <script src="~/js/handleUserUrl.js"></script>
 }

@@ -1,29 +1,89 @@
-﻿// JavaScript file to handle user input URL
-// Function to validate the URL format
+﻿﻿// JavaScript file to handle user input URL
+// Function to validate the URL format and screenshot preview
 document.addEventListener("DOMContentLoaded", function () {
-    // Get urlInput
+    console.log("DOM fully loaded, binding handleUserUrl...");
+
+    // Get the form element and the URL input field
     const form = document.getElementById("urlForm");
-    const urlInput = document.getElementById("urlInput");
+    const urlInputField = document.getElementById("urlInput");
 
-    form.addEventListener("submit", function (event) {
-        // Grab the user input
-        let rawUrl = urlInput.value.trim();
+    // Bind custom submit handler to the form
+    form.addEventListener("submit", handleUserUrl);
 
-        // If user typed neither "http://" nor "https://", prepend "https://"
-        if (!rawUrl.startsWith("http://") && !rawUrl.startsWith("https://")) {
-            rawUrl = "https://" + rawUrl;
+    // Asynchronous function that runs when the user submits the form
+    async function handleUserUrl(event) {
+        event.preventDefault(); // Prevents the form from submitting normally (page reload)
+        console.log("handleUserUrl triggered");
+
+        // Get the raw input and strip leading/trailing spaces
+        let urlInput = urlInputField.value.trim();
+        const responseMessage = document.getElementById('responseMessage');
+        console.log("Raw input:", urlInput);
+
+        // Prepend https:// for safety 
+        if (!urlInput.startsWith("http://") && !urlInput.startsWith("https://")) {
+            urlInput = "https://" + urlInput;
         }
 
-        // Remove trailing slash
-        if (rawUrl.endsWith("/")) {
-            rawUrl = rawUrl.slice(0, -1);
+        // Remove any spaces and trailing slashes for URL consistency
+        urlInput = urlInput.replace(/\s+/g, "").replace(/\/$/, "");
+
+        // Update the input box value with the normalized URL
+        urlInputField.value = urlInput;
+        console.log("Normalized URL:", urlInput);
+
+        // Ensure domain extension
+        if (!urlInput || !/\.[a-z]{2,}/.test(urlInput)) {
+            console.warn("Validation failed");
+            return false; 
         }
 
-        // Put the corrected value back in the input for submission
-        urlInput.value = rawUrl;
-    });
+        try {
+            // Make an AJAX call to the screenshot API endpoint
+            console.log("Sending POST to /api/screenshot");
+            const res = await fetch('/api/screenshot', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+
+                body: JSON.stringify({ Url: urlInput })
+            });
+
+            console.log("Screenshot API response status:", res.status);
+
+            // If the API failed read and log the error response
+            if (!res.ok) {
+                const errorText = await res.text();
+                console.error("Screenshot error:", errorText);
+                return false;
+            }
+
+            // Get the base64 screenshot string from the response
+            const base64Screenshot = await res.text();
+            console.log("🖼 Screenshot received (base64 length):", base64Screenshot.length);
+
+            // Find the image element inside the loader and inject the screenshot
+            const previewImage = document.getElementById('screenshotPreview');
+            if (previewImage) {
+                previewImage.src = base64Screenshot; 
+                previewImage.alt = `Screenshot of ${urlInput}`; 
+                // Set CSS transition class
+                previewImage.classList.add('loaded');
+            }
+
+            // Trigger transition to the loading overlay and auto-submit the form after a short delay
+            showScanningTransition(); 
+
+        } catch (err) {
+            // If the fetch call fails 
+            console.error("AJAX failed:", err);
+        }
+
+        // Prevent default form behavior regardless of success/failure
+        return false;
+    }
 });
 
+// Function to validate the URL format
 function validateURL(urlInput) {
     var urlRegex = /^(https?:\/\/)([\w-]+\.)+[\w-]+(\/[\w-]*)*$/;
     return urlRegex.test(urlInput);
@@ -36,7 +96,6 @@ function handleUserUrl(event) {
     var urlInput = document.getElementById('urlInput').value.trim();
     var responseMessage = document.getElementById('responseMessage');
     var loaderWrapper = document.getElementById('loaderWrapper');
-    var scanningWrapper = document.getElementById('scanningWrapper');
     
 
     // Check if the URL is empty
@@ -82,20 +141,15 @@ function handleUserUrl(event) {
     
     // Hide the confirmation message and show loader
     responseMessage.innerHTML = "";
-    loaderWrapper.style.display = 'flex';
+    // loaderWrapper.style.display = 'flex'; // Show loader state
 
-    // document.getElementById('urlForm').submit();    
+    if (loaderWrapper) {
+        loaderWrapper.style.display = 'flex'; // Show loader state
+    } else {
+        console.error("Element with ID 'loaderWrapper' not found.");
+    }
 
-    // Delay the redirect to the results page
-    setTimeout(function () {
-        loaderWrapper.style.display = 'none';
-        scanningWrapper.style.display = 'block';
-
-        // Submit the form after showing the scanning state
-        setTimeout(function () {
-            document.getElementById('urlForm').submit(); // Submit form after 2 seconds of scanning state
-        }, 2000);
-    }, 3000);
+    showScanningTransition(); 
 
     closePopup();
 

@@ -10,55 +10,40 @@ using NUnit.Framework;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Support.UI;
 
-namespace Uxcheckmate_Main.StepDefinitions;
-
-[Binding]
-public class ScreenshotSteps
+namespace BDD_Tests.StepDefinitions
 {
-    private readonly IWebDriver driver;
-    private HomeController _controller;
-    private IActionResult _result;
-    public ScreenshotSteps(IWebDriver webDriver)
+    [Binding]
+    public class ScreenshotSteps
     {
-        driver = webDriver;
+        private readonly IWebDriver driver;
+        public ScreenshotSteps(IWebDriver webDriver)
+        {
+            driver = webDriver;
+        }
+        [Then("the system displays a loading overlay with the website screenshot")]
+        public void ThenTheSystemDisplaysLoadingOverlayWithScreenshot()
+        {
+            WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(30));
+            wait.Until(driver => driver.FindElement(By.Id("scanningWrapper")));
+            var screenshotElement = driver.FindElement(By.Id("screenshotPreview"));
+            Assert.That(screenshotElement.Displayed, Is.True, "Screenshot element is not displayed.");
+        }
+
+        [Then("the report view is displayed")]
+        public void ThenUserSeesLoadingOverlayWithScreenshot()
+        {
+            var wait = new WebDriverWait(driver, TimeSpan.FromSeconds(15));
+            var container = wait.Until(d => d.FindElement(By.Id("reportContainer")));
+            Assert.That(container.Displayed, Is.True);
+        }
+
+        [Then("the user will see a screenshot of their website")]
+        public void ThenUserSeesReportWithScreenshot()
+        {
+            Assert.That(driver.Url, Does.Contain("/Home/Report"), "Did not navigate to Report View.");
+            Assert.That(driver.PageSource.Contains("Report"), Is.True, "Expected content not found on result view.");
+            Assert.That(driver.PageSource.Contains("websiteScreenshot"), Is.True, "Expected screenshot not found on report view.");
+        }
+
     }
-
-    // // Mock additions
-    // [Given("the user navigates to the site")]
-    // public void GivenTheUserNavigatesToTheSite()
-    // {
-    //     driver.Navigate().GoToUrl("http://localhost:5000/");
-    // }
- 
-    // [When(@"the user enters a URL to analyze(?: with ""(.*)"")?")]
-    // public void WhenTheUserEntersAUrlToAnalyze(string url = null)
-    // {
-    //     url ??= "https://example.com";
-    //     driver.FindElement(By.Id("urlInput")).SendKeys(url);
-    // }
-
-    // [When("the user starts the analysis")]
-    // public void WhenTheUserStartsTheAnalysis()
-    // {
-    //     var submitButton = driver.FindElement(By.Id("analyzeBtn"));
-    //     submitButton.Click();
-    // } 
-
-    [Then("Then the user will see a loading overlay")]
-    public void ThenUserSeesLoadingOverlay()
-    {
-        WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(30));
-        wait.Until(driver => driver.FindElement(By.Id("scanningWrapper")));
-    }
-
-    [Then("Then the user should see the result view with the website screenshot")]
-    public void ThenUserSeesResultViewWithScreenshot()
-    {
-        WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(30));
-        wait.Until(driver => driver.FindElement(By.Id("screenshot")));
-        var screenshotElement = driver.FindElement(By.Id("screenshot"));
-        Assert.That(screenshotElement.Displayed, Is.True, "Screenshot element is not displayed.");
-    }
-
-
 }

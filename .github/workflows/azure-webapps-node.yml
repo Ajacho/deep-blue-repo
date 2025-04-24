@@ -1,0 +1,52 @@
+name: Publish 🚀
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+    - deploy-test
+
+env:
+  AZURE_WEBAPP_NAME: UxCheckmateMain
+  AZURE_WEBAPP_PACKAGE_PATH: "./publish"
+  DB_STRING_SECRET: ${{ secrets.DB_STRING_SECRET }}
+
+permissions:
+  contents: read
+
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '9.0.x'
+          
+      - name: Restore
+        run: dotnet restore ./Uxcheckmate/Uxcheckmate.sln
+        
+      - name: Build
+        run: dotnet build ./Uxcheckmate/Uxcheckmate.sln --configuration Release --no-restore
+        
+      # Install Playwright browsers
+      - name: Install Playwright Browsers (for .NET)
+        run: pwsh ./Uxcheckmate/Uxcheckmate_Main/bin/Release/net9.0/playwright.ps1 install
+
+      - name: Test Moq Tests
+        run: dotnet test ./Uxcheckmate/Moq_Tests/Moq_Tests.csproj --configuration Release
+        
+      - name: Publish
+        run: dotnet publish ./Uxcheckmate/Uxcheckmate.sln --configuration Release --no-build --output '${{ env.AZURE_WEBAPP_PACKAGE_PATH }}'
+
+      - name: Deployment
+        uses: azure/webapps-deploy@v2
+        with:
+          app-name: ${{ env.AZURE_WEBAPP_NAME }}
+          publish-profile: ${{ secrets.AZURE_PUBLISH_PROFILE }}
+          package: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
+          

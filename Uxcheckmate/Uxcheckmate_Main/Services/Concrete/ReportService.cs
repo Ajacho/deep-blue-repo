@@ -22,7 +22,7 @@ namespace Uxcheckmate_Main.Services
         private readonly IHeadingHierarchyService _headingHierarchyService;
         private readonly IColorSchemeService _colorSchemeService;
         private readonly IMobileResponsivenessService _mobileResponsivenessService;
-        private readonly IWebScraperService _scraperService;
+      //  private readonly IWebScraperService _scraperService;
         private readonly IScreenshotService _screenshotService;
         private readonly IPlaywrightScraperService _playwrightScraperService;
         private readonly IPopUpsService _popUpsService;
@@ -31,7 +31,7 @@ namespace Uxcheckmate_Main.Services
         private readonly IScrollService _scrollService;
 
 
-        public ReportService(HttpClient httpClient, ILogger<ReportService> logger, UxCheckmateDbContext context, IOpenAiService openAiService, IBrokenLinksService brokenLinksService, IHeadingHierarchyService headingHierarchyService, IColorSchemeService colorSchemeService, IMobileResponsivenessService mobileResponsivenessService, IScreenshotService screenshotService, IWebScraperService scraperService, IPlaywrightScraperService playwrightScraperService, IPopUpsService popUpsService, IAnimationService animationService, IAudioService audioService, IScrollService scrollService)
+        public ReportService(HttpClient httpClient, ILogger<ReportService> logger, UxCheckmateDbContext context, IOpenAiService openAiService, IBrokenLinksService brokenLinksService, IHeadingHierarchyService headingHierarchyService, IColorSchemeService colorSchemeService, IMobileResponsivenessService mobileResponsivenessService, IScreenshotService screenshotService, IPlaywrightScraperService playwrightScraperService, IPopUpsService popUpsService, IAnimationService animationService, IAudioService audioService, IScrollService scrollService)
         {
             _httpClient = httpClient;
             _dbContext = context;
@@ -42,7 +42,7 @@ namespace Uxcheckmate_Main.Services
             _colorSchemeService = colorSchemeService;
             _mobileResponsivenessService = mobileResponsivenessService;
             _screenshotService = screenshotService;
-            _scraperService = scraperService;
+          //  _scraperService = scraperService;
             _playwrightScraperService = playwrightScraperService;
             _popUpsService = popUpsService;
             _animationService = animationService;
@@ -64,18 +64,22 @@ namespace Uxcheckmate_Main.Services
                 _logger.LogError("URL is null or empty.");
                 throw new ArgumentException("URL cannot be empty.", nameof(url));
             }
+            
+            // Scrape site
+            var fullScraped = await _playwrightScraperService.ScrapeEverythingAsync(url);
+            var scrapedData = fullScraped.ToDictionary();
 
             // Call the scrapers in parallel
-            var staticScrapeTask = _scraperService.ScrapeAsync(url);
-            var dynamicScrapeTask = _playwrightScraperService.ScrapeAsync(url);
+          //  var staticScrapeTask = _scraperService.ScrapeAsync(url);
+           // var dynamicScrapeTask = _playwrightScraperService.ScrapeAsync(url);
 
-            await Task.WhenAll(staticScrapeTask, dynamicScrapeTask);
+           // await Task.WhenAll(staticScrapeTask, dynamicScrapeTask);
 
-            var scrapedData = staticScrapeTask.Result;
-            var assets = dynamicScrapeTask.Result;
+           // var scrapedData = staticScrapeTask.Result;
+           // var assets = dynamicScrapeTask.Result;
 
             // Merge Static and Dynamic content into one dictionary
-            scrapedData = MergeScrapedData(scrapedData, assets);
+           // scrapedData = MergeScrapedData(scrapedData, assets);
 
            /* foreach (var css in assets.ExternalCssContents)
             {
@@ -97,7 +101,7 @@ namespace Uxcheckmate_Main.Services
             // Run analysis for each category in parallel
             await Parallel.ForEachAsync(
                 designCategories,
-                new ParallelOptions { MaxDegreeOfParallelism = Environment.ProcessorCount * 10 },
+                new ParallelOptions { MaxDegreeOfParallelism = Environment.ProcessorCount * 2 },
                 async (category, cancellationToken) =>
                 {
                     _logger.LogInformation("Analyzing category: {CategoryName} using scan method: {ScanMethod}", category.Name, category.ScanMethod);
@@ -277,7 +281,7 @@ namespace Uxcheckmate_Main.Services
             return aiText.Contains("critical", StringComparison.OrdinalIgnoreCase) ? 3 :
                    aiText.Contains("should", StringComparison.OrdinalIgnoreCase) ? 2 : 1;
         }
-        private Dictionary<string, object> MergeScrapedData(Dictionary<string, object> baseData, ScrapedContent assets)
+    /*    private Dictionary<string, object> MergeScrapedData(Dictionary<string, object> baseData, ScrapedContent assets)
         {
             baseData["url"] = assets.Url;
             baseData["html"] = assets.Html;
@@ -302,7 +306,7 @@ namespace Uxcheckmate_Main.Services
             baseData["viewportLabel"] = assets.ViewportLabel;
 
             return baseData;
-        }
+        }*/
 
 
     }

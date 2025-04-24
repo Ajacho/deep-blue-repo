@@ -24,9 +24,18 @@ namespace BDD_Tests.StepDefinitions
             var overlay = wait.Until(d =>
             {
                 var el = d.FindElement(By.Id("scanningWrapper"));
+
                 return el.Displayed ? el : null;
             });
             Assert.That(overlay.Displayed, Is.True);
+            // Testing screenshot
+            var screenshotPreview = wait.Until(d =>
+            {
+                var elements = d.FindElements(By.Id("screenshotPreview"));
+                var el = elements.FirstOrDefault();
+                return el != null && el.Displayed ? el : null;
+            });
+            Assert.That(screenshotPreview.Displayed, Is.True, "Screenshot preview should be visible.");  
         }
 
         [Then("the report view is displayed")]

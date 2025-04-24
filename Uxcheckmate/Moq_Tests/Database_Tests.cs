@@ -13,6 +13,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using System.Text.Json;
 using Uxcheckmate_Main.Controllers;
 using Uxcheckmate_Main.Services;
 using Uxcheckmate_Main.Models;
@@ -23,30 +24,42 @@ namespace Database_Tests
     {
         private UxCheckmateDbContext _context;
         private DbContextOptions<UxCheckmateDbContext> _options;
-        [SetUp]
-        public void Setup()
+    [SetUp]
+    public void Setup()
+    {
+        var connectionJson = Environment.GetEnvironmentVariable("DB_STRING_SECRET");
+
+        string dbConnectionString = null;
+        string authDbConnectionString = null;
+
+        if (!string.IsNullOrEmpty(connectionJson))
         {
-            var configPath = Path.Combine(TestContext.CurrentContext.WorkDirectory, "appsettings.json");
-            
+            var dict = JsonSerializer.Deserialize<Dictionary<string, string>>(connectionJson);
+            dbConnectionString = dict.GetValueOrDefault("DBConnection");
+            authDbConnectionString = dict.GetValueOrDefault("AuthDBConnection");
+        }
+        else
+        {
             var configuration = new ConfigurationBuilder()
                 .SetBasePath(TestContext.CurrentContext.WorkDirectory)
                 .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
                 .Build();
-
-            var dbConnectionString = configuration.GetConnectionString("DBConnection");
-
-            // Debugging output
-            Console.WriteLine($"Retrieved Connection String: {dbConnectionString}");
-
-            if (string.IsNullOrEmpty(dbConnectionString))
-            {
-                throw new InvalidOperationException("DBConnection was not found in appsettings.json!");
-            }
-
-            _options = new DbContextOptionsBuilder<UxCheckmateDbContext>().UseSqlServer(dbConnectionString).Options;
-            _context = new UxCheckmateDbContext(_options);
-
+            dbConnectionString = configuration.GetConnectionString("DBConnection");
+            authDbConnectionString = configuration.GetConnectionString("AuthDBConnection");
         }
+
+        // Console.WriteLine($"DB: {dbConnectionString}");
+        // Console.WriteLine($"AuthDB: {authDbConnectionString}");
+
+        if (string.IsNullOrEmpty(dbConnectionString))
+            throw new InvalidOperationException("DBConnection was not found!");
+
+        _options = new DbContextOptionsBuilder<UxCheckmateDbContext>()
+            .UseSqlServer(dbConnectionString)
+            .Options;
+        _context = new UxCheckmateDbContext(_options);
+    }
+
 
         [Test]
         public void Database_Connected()

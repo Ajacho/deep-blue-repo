@@ -49,6 +49,11 @@ namespace Controller_Tests
             _viewEngineMock = new Mock<ICompositeViewEngine>();
             _tempDataMock = new Mock<ITempDataDictionary>();
 
+            // Mock the CaptureScreenshot method
+            _screenshotServiceMock
+                .Setup(s => s.CaptureScreenshot(It.IsAny<Microsoft.Playwright.PageScreenshotOptions>(), It.IsAny<string>()))
+                .ReturnsAsync("mockScreenshotPath");
+                
             // Configure in-memory database options
             var options = new DbContextOptionsBuilder<UxCheckmateDbContext>()
                 .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())  // Unique name per test

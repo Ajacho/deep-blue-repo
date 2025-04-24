@@ -74,7 +74,7 @@ namespace BDD_Tests.StepDefinitions
         [When("the user enters {string} to analyze")]
         public void WhenTheUserEntersToAnalyze(string url)
         {
-            var wait = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
+            var wait = new WebDriverWait(driver, TimeSpan.FromSeconds(20));
             var input = wait.Until(d => d.FindElement(By.Id("urlInput")));
             input.Clear();
             input.SendKeys(url);

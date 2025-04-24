@@ -24,6 +24,7 @@ namespace BDD_Tests.StepDefinitions
         {
             driver = webDriver;
         }
+
         [Given("user is logged in")]
         public void GivenUserIsLoggedIn()
         {
@@ -34,9 +35,11 @@ namespace BDD_Tests.StepDefinitions
                 new Claim(ClaimTypes.Role, "User")
             }, "mock"));
             var httpContext = new DefaultHttpContext { User = user };
+
             // In Memory DB Setup
             var options = new DbContextOptionsBuilder<UxCheckmateDbContext>().UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString()).Options;
             var context = new UxCheckmateDbContext(options);
+
             // Moqing report
             context.Reports.Add(new Report
             {
@@ -47,9 +50,11 @@ namespace BDD_Tests.StepDefinitions
                 AccessibilityIssues = new List<AccessibilityIssue>(),
                 DesignIssues = new List<DesignIssue>()
             });
+
             context.SaveChanges();
             _controller = TestBuilder.BuildHomeController(httpContext, context);
         }
+
         [When("they click user dash")]
         public async Task WhenTheyClickUserDash()
         {
@@ -96,6 +101,17 @@ namespace BDD_Tests.StepDefinitions
         {
             Assert.That(driver.PageSource.Contains("Report ID"), Is.True, "Report ID was not found on the dashboard page.");
         }
-        
-//     }
-// }
+
+        // Grouped reports
+        [Then("the user should see grouped reports by domain")]
+        public void ThenUserSeesGroupedReportsByDomain()
+        {
+            var groupedReports = driver.FindElements(By.ClassName("grouped-report"));
+            Assert.That(groupedReports.Count, Is.GreaterThan(0), "No grouped reports found on the dashboard.");
+            foreach (var report in groupedReports)
+            {
+                Assert.That(report.Text, Does.Contain("https://example.com"), "Expected domain not found in grouped reports.");
+            }
+        }
+    }
+ }

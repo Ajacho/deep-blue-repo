@@ -44,7 +44,12 @@ namespace Uxcheckmate_Main.Services
         public async Task<IBrowserContext> GetBrowserContextAsync()
         {
             var browser = await GetBrowserAsync(); // Get the browser instance
-            return await browser.NewContextAsync(); // Create and return a new browser context
+            // return await browser.NewContextAsync(); // Create and return a new browser context
+            return await browser.NewContextAsync(new BrowserNewContextOptions
+            {
+                // Ignore the page's Content Security Policy (CSP) to allow all resources to load
+                BypassCSP = true, // Bypass Content Security Policy
+            });
         }
 
         // Gracefully closes the browser and Playwright instance.

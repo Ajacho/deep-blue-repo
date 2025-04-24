@@ -18,12 +18,12 @@ namespace Service_Tests
         private Mock<IOpenAiService> _openAiServiceMock;
         private Mock<IColorSchemeService> _colorSchemeServiceMock;
         private UxCheckmateDbContext _context;
-        private Mock<IWebScraperService> _webScraperServiceMock;
+       // private Mock<IWebScraperService> _webScraperServiceMock;
         private Mock<IScreenshotService> _screenshotServiceMock;
         private Mock<IPlaywrightScraperService> _playwrightScraperServiceMock;
         private Mock<IBrokenLinksService> _brokenLinksServiceMock;
         private Mock<IHeadingHierarchyService> _headingHierarchyServiceMock;
-        private Mock<IDynamicSizingService> _dynamicSizingServiceMock;
+        private Mock<IMobileResponsivenessService> _mobileResponsivenessServiceMock;
         private Mock<IPopUpsService> _popUpsServiceMock;
         private Mock<IAnimationService> _animationServiceMock;
         private Mock<IAudioService> _audioServiceMock;
@@ -53,35 +53,44 @@ namespace Service_Tests
             _openAiServiceMock = new Mock<IOpenAiService>();
             _colorSchemeServiceMock = new Mock<IColorSchemeService>();
             _screenshotServiceMock = new Mock<IScreenshotService>();
-            _webScraperServiceMock = new Mock<IWebScraperService>();
             _playwrightScraperServiceMock = new Mock<IPlaywrightScraperService>();
             _brokenLinksServiceMock = new Mock<IBrokenLinksService>();
             _headingHierarchyServiceMock = new Mock<IHeadingHierarchyService>();
-            _dynamicSizingServiceMock = new Mock<IDynamicSizingService>();
+            _mobileResponsivenessServiceMock = new Mock<IMobileResponsivenessService>();
             _popUpsServiceMock = new Mock<IPopUpsService>();
             _animationServiceMock = new Mock<IAnimationService>();
             _audioServiceMock = new Mock<IAudioService>();
             _scrollServiceMock = new Mock<IScrollService>();
 
-            // Setup default web scraper response
-            _webScraperServiceMock
-                .Setup(s => s.ScrapeAsync(It.IsAny<string>()))
-                .ReturnsAsync(new Dictionary<string, object>
-                {
-                    { "htmlContent", "<html><body><h1>Title</h1><p>Content</p></body></html>" }
-                });
 
             // Setup default playwright scraper response
             _playwrightScraperServiceMock
-                .Setup(s => s.ScrapeAsync(It.IsAny<string>()))
+                .Setup(s => s.ScrapeEverythingAsync(It.IsAny<string>()))
                 .ReturnsAsync(new ScrapedContent
                 {
-                    ExternalCssContents = new List<string>(),
-                    InlineCss = new List<string>(),
-                    ExternalJsContents = new List<string>(),
-                    InlineJs = new List<string>(),
+                    Url = "https://example.com",
+                    HtmlContent = "<html><body><h1>Mock</h1></body></html>",
+                    Headings = 1,
+                    Paragraphs = 1,
+                    Images = 0,
+                    Links = new List<string> { "https://example.com/about" },
+                    TextContent = "Sample paragraph text.",
+                    Fonts = new List<string> { "arial" },
+                    HasFavicon = true,
+                    FaviconUrl = "https://example.com/favicon.ico",
                     ScrollHeight = 3000,
-                    ViewportHeight = 1000
+                    ScrollWidth = 1200,
+                    ViewportHeight = 1000,
+                    ViewportWidth = 1200,
+                    ViewportLabel = "1200x1000",
+                    InlineCssList = new List<string>(),
+                    InlineJsList = new List<string>(),
+                    ExternalCssLinks = new List<string>(),
+                    ExternalJsLinks = new List<string>(),
+                    ExternalCssContents = new List<string>(),
+                    ExternalJsContents = new List<string>(),
+                    InlineCss = "",
+                    InlineJs = ""
                 });
 
             // Initialize ReportService with all mocks
@@ -93,9 +102,8 @@ namespace Service_Tests
                 _brokenLinksServiceMock.Object,
                 _headingHierarchyServiceMock.Object,
                 _colorSchemeServiceMock.Object,
-                _dynamicSizingServiceMock.Object,
+                _mobileResponsivenessServiceMock.Object,
                 _screenshotServiceMock.Object,
-                _webScraperServiceMock.Object,
                 _playwrightScraperServiceMock.Object,
                 _popUpsServiceMock.Object,
                 _animationServiceMock.Object,
