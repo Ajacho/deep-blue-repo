@@ -16,11 +16,13 @@ namespace Uxcheckmate_Main.Services
     {
         private readonly IPlaywrightService _playwrightService;
         private readonly ILogger<PlaywrightScraperService> _logger;
+        private readonly ILayoutParsingService _layoutParsingService;
 
-        public PlaywrightScraperService(IPlaywrightService playwrightService, ILogger<PlaywrightScraperService> logger)
+        public PlaywrightScraperService(IPlaywrightService playwrightService, ILogger<PlaywrightScraperService> logger, ILayoutParsingService layoutParsingService)
         {
             _playwrightService = playwrightService;
             _logger = logger;
+            _layoutParsingService = layoutParsingService;
         }
 
         public async Task<ScrapedContent> ScrapeEverythingAsync(string url)
@@ -91,11 +93,16 @@ namespace Uxcheckmate_Main.Services
                         ? true
                         : false;
 
+                
+                // Grabbing html elements for pattern analysis
+                var layoutElements = await _layoutParsingService.ExtractHtmlElementsAsync(page);
+                
                 // Use injected helper script to download the actual content of all external stylesheets
                 var externalCssContents = await page.EvaluateAsync<string[]>("() => window.scrapeExternalCss()");
 
                 // Use injected helper script to download the actual content of all external JS files
                 var externalJsContents = await page.EvaluateAsync<string[]>("() => window.scrapeExternalJs()");
+
 
                 // Close the page and browser context
                 await page.CloseAsync();
@@ -126,7 +133,8 @@ namespace Uxcheckmate_Main.Services
                     ExternalCssContents = externalCssContents.ToList(),
                     ExternalJsContents = externalJsContents.ToList(),
                     InlineCss = string.Join("\n", SafeList("inlineCssList")),
-                    InlineJs = string.Join("\n", SafeList("inlineJsList"))
+                    InlineJs = string.Join("\n", SafeList("inlineJsList")),
+                    LayoutElements = layoutElements
                 };
             }
             catch (Exception ex)

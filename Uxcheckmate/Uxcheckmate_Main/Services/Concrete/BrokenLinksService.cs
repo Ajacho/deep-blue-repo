@@ -56,7 +56,7 @@ namespace Uxcheckmate_Main.Services
             }
             else
             {
-                _logger.LogInformation("Broken link analysis completed. No broken links found.");
+                _logger.LogInformation("Broken link analysis completed. No issues found.");
                 return string.Empty;
             }
         }

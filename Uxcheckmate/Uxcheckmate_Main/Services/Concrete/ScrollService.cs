@@ -54,11 +54,7 @@ namespace Uxcheckmate_Main.Services
                 // Return insight based on scroll length category
                 if (scrollCount <= 3)
                 {
-                    return $"This site is easily viewable in about {scrollCount} full-screen scrolls. Great for usability!";
-                }
-                else if (scrollCount <= 6)
-                {
-                    return $"This page requires approximately {scrollCount} scrolls. Consider reducing content density or introducing section anchors.";
+                    return string.Empty;
                 }
                 else
                 {

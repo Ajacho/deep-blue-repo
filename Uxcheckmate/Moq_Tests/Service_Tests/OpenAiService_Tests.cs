@@ -161,6 +161,114 @@ namespace Service_Tests
             Assert.That(result, Is.Not.Null.And.Not.Empty, "FormatScrapedData returned null or empty string.");
             Assert.That(result.Trim(), Is.EqualTo(expected.Trim()), "The formatted output does not match the expected value.");
         }
+
+        [Test]
+        public async Task ImproveMessageAsync_ReturnsStringAsync()
+        {
+            // Arrange
+            // Set up a mock service message and category to simulate an incoming request
+            var mockServiceMessage = "This example has 5 headings, 10 images, 8 links, 3 fonts, and could be better";
+            var mockCategory = "Broken Links";
+
+            // Build a fake OpenAI API response
+            var fakeApiResponse = new OpenAiResponse
+            {
+                Choices = new List<Choice>
+                {
+                    new Choice
+                    {
+                        Message = new Message
+                        {
+                            Content = "Our analysis found that the structure could be improved by adjusting headings, links, and images."
+                        }
+                    }
+                }
+            };
+
+            // Serialize the fake API response into JSON format
+            var fakeResponseJson = JsonSerializer.Serialize(fakeApiResponse);
+
+            // Setup the mock HttpMessageHandler to intercept HTTP calls
+            // When any HTTP POST request is sent, return a 200 OK response with the fake JSON
+            _mockHttpMessageHandler.Protected()
+                .Setup<Task<HttpResponseMessage>>(
+                    "SendAsync",
+                    // Match any HTTP request
+                    ItExpr.IsAny<HttpRequestMessage>(),
+                    // Match any cancellation token
+                    ItExpr.IsAny<CancellationToken>()
+                )
+                .ReturnsAsync(new HttpResponseMessage
+                {
+                    StatusCode = HttpStatusCode.OK, // Simulate a successful OpenAI response
+                    Content = new StringContent(fakeResponseJson, Encoding.UTF8, "application/json")
+                });
+
+            // Act
+            // Call the method under test, which internally uses the mocked HTTP response
+            var result = await _openAiService.ImproveMessageAsync(mockServiceMessage, mockCategory);
+
+            // Assert
+            // Validate that the result is a non-null, non-empty string
+            Assert.That(result, Is.TypeOf<string>(), "Expected a string result from ImproveMessageAsync.");
+            Assert.That(result, Is.Not.Null.And.Not.Empty, "The returned improved message should not be null or empty.");
+            
+            // Validate that the output has been improved 
+            Assert.That(result, !Is.EqualTo(mockServiceMessage), "The improved message should be different from the raw input.");
+
+            // Validate that the improved message starts with "Our analysis found" as per your writing standard
+            Assert.That(result, Does.StartWith("Our analysis found"), "The improved message should begin with the required phrase.");
+        }
+
+        [Test]
+        public async Task GenerateReportSummaryAsync_ReturnsStringAsync()
+        {
+            // Arrange
+            // Prepare an empty list of design issues to simulate an edge case
+            var mockIssues = new List<DesignIssue>();
+            var mockUrl = "https://example.com";
+            var mockHtml = "<html><body><h1>test</h1><p>this is a test</p><button>hi</button></body></html>";
+
+            // Setup a fake OpenAI API response for the report summary
+            var fakeApiResponse = new OpenAiResponse
+            {
+                Choices = new List<Choice>
+                {
+                    new Choice
+                    {
+                        Message = new Message
+                        {
+                            Content = "Our analysis found that the site is generally well-structured but could improve accessibility features."
+                        }
+                    }
+                }
+            };
+
+            var fakeResponseJson = JsonSerializer.Serialize(fakeApiResponse);
+
+            // Mock the HttpMessageHandler to return the fake API response when called
+            _mockHttpMessageHandler.Protected()
+                .Setup<Task<HttpResponseMessage>>(
+                    "SendAsync",
+                    ItExpr.IsAny<HttpRequestMessage>(),
+                    ItExpr.IsAny<CancellationToken>()
+                )
+                .ReturnsAsync(new HttpResponseMessage
+                {
+                    StatusCode = HttpStatusCode.OK,
+                    Content = new StringContent(fakeResponseJson, Encoding.UTF8, "application/json")
+                });
+
+            // Act
+            // Call the service method under test
+            var result = await _openAiService.GenerateReportSummaryAsync(mockIssues, mockHtml, mockUrl);
+
+            // Assert
+            // The result should be a non-null, non-empty string
+            Assert.That(result, Is.TypeOf<string>(), "Expected a string result from GenerateReportSummaryAsync.");
+            Assert.That(result, Is.Not.Null.And.Not.Empty, "The generated report summary should not be null or empty.");
+        }
+
         [TearDown]
         public void TearDown()
         {

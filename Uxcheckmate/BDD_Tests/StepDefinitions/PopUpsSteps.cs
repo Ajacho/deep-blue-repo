@@ -31,6 +31,10 @@ namespace Uxcheckmate.BDD_Tests.StepDefinitions
             _scenarioContext = scenarioContext;
             var loggerFactory = LoggerFactory.Create(builder => builder.AddConsole());
 
+            // layout parsing
+            var layoutParsingLogger = loggerFactory.CreateLogger<LayoutParsingService>();
+            var layoutParsingService = new LayoutParsingService(layoutParsingLogger);
+
             // Web Scraper Instance
             var webScraperLogger = loggerFactory.CreateLogger<WebScraperService>();
             _scraperService = new WebScraperService(new HttpClient(), webScraperLogger);
@@ -41,7 +45,7 @@ namespace Uxcheckmate.BDD_Tests.StepDefinitions
 
             // Playwright Scraper Instance
             var playwrightScraperLogger = loggerFactory.CreateLogger<PlaywrightScraperService>();
-            _playwrightScraperService = new PlaywrightScraperService(_playwrightService, playwrightScraperLogger);
+            _playwrightScraperService = new PlaywrightScraperService(_playwrightService, playwrightScraperLogger, layoutParsingService);
 
         }
 

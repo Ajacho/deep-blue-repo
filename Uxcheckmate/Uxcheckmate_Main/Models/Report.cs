@@ -20,6 +20,7 @@ public partial class Report
 
     public DateOnly Date { get; set; }
 
+    public string? Summary { get; set; }
     [Column("UserID")]
     public string? UserID { get; set; }
 

@@ -293,9 +293,37 @@ public class HomeController : Controller
         // Return the rendered partial views as a JSON object
         return Json(new { designHtml, accessibilityHtml });
     }
+
     // ============================================================================================================
     // Private Helper Methods
     // ============================================================================================================
+    [Authorize]
+    [HttpDelete]
+    public async Task<IActionResult> DeleteReport(int reportId)
+    {
+        var report = await _context.Reports
+            .Include(r => r.AccessibilityIssues)
+            .Include(r => r.DesignIssues)
+            .FirstOrDefaultAsync(r => r.Id == reportId);
+
+        if (report == null)
+        {
+            return NotFound();
+        }
+
+        // Remove related issues and the report itself
+        _context.AccessibilityIssues.RemoveRange(report.AccessibilityIssues);
+        _context.DesignIssues.RemoveRange(report.DesignIssues);
+        _context.Reports.Remove(report);
+
+        await _context.SaveChangesAsync();
+
+        _logger.LogInformation("Report with ID {ReportId} deleted.", reportId);
+
+        return Ok();
+    }
+
+
     private string NormalizeUrl(string url)
     {
         url = url.Trim();
@@ -389,6 +417,7 @@ public class HomeController : Controller
         }
         return report;
     }
+
 
     private void SortReportIssues(Report report, string sortOrder)
     {

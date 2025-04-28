@@ -38,6 +38,8 @@ main {
   flex: 1; /* Allows main content to expand and push footer down */
 }
 
+
+
 /* 
 ==================================================
 Navbar 
@@ -712,4 +714,69 @@ Report Page Styling
   background-color: var(--accordian-bg) !important;
   color: var(--accordian-text) !important;
 }
+.modal-content {
+  border-radius: 1rem;
+}
 
+/*
+==================================================
+User Dashboard Styling
+==================================================
+*/
+
+.myUserDashHeader{
+  padding: 30px;
+  text-align: center;
+  font-family:"DM Serif Text", serif;
+  font-size: 60px;
+  background: #f9f9f9a3;
+  background-image: url("/images/websiteAnalysisHeaderImg.png");
+  background-size: 50%;
+  background-repeat: no-repeat;
+  background-position: top right;
+  color: black;
+  font-size: 30px;
+}
+
+.userDashbtn{
+  background: #0B2C48; 
+  color: white;
+  border: rounded;
+  padding: 12px 20px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.3s ease;
+}
+
+.userDashbtn:hover {
+  background: #153551ac; 
+}
+
+#urlLinkHeader
+{
+  font-family:"DM Serif Text", serif;
+  font-size: 48px;
+  overflow-wrap: break-word; /* Break long words to the next line */
+}
+
+.modal-content{
+  background-color: var(--accordian-item-bg) !important;
+  color: var(--accordian-item-text) !important;
+  border-radius: 10px;
+  padding: 20px;
+  font-family:"Lexend", sans-serif;
+  font-weight: 200;
+}
+
+.modal-header{
+  background-color: #001521;
+  color: white;
+}
+
+.modal-title, .title-issues{
+  font-family:"DM Serif Text", serif;
+  font-size: 30px;
+  font-weight: bold;
+}

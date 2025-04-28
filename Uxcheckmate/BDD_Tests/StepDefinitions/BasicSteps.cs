@@ -20,12 +20,20 @@ namespace BDD_Tests.StepDefinitions
         private IActionResult _result;
         private readonly ScenarioContext _scenarioContext;
         private ScrapedContent _scrapedData;
-        public BasicSteps(IWebDriver webDriver, ScenarioContext scenarioContext)
+        private readonly HtmlTestServer _htmlTestServer;
+        public BasicSteps(IWebDriver webDriver, ScenarioContext scenarioContext, HtmlTestServer htmlTestServer)
         {
             driver = webDriver;
             _scenarioContext = scenarioContext;
+            _htmlTestServer = htmlTestServer;
         }
-        // Mock additions
+        [Given(@"their local site url is ""(.*)""")]
+        public void GivenTheirLocalSiteUrlIs(string localUrl)
+        {
+            var contentRoot = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, @"..\..\..\..\BDD_Tests\htmlFiles"));
+            _htmlTestServer.StartServer(contentRoot);
+            WaitUntilAvailable(localUrl).Wait();
+        }
         [Given("the user navigates to the site")]
         public void GivenTheUserNavigatesToTheSite()
         {
@@ -64,6 +72,12 @@ namespace BDD_Tests.StepDefinitions
             var submitButton = driver.FindElement(By.Id("analyzeBtn"));
             submitButton.Click();
         }
+        [When("the report view has loaded")]
+        public void WHenReportViewHadLoaded(){
+            var wait = new WebDriverWait(driver, TimeSpan.FromSeconds(15));
+            bool navigated = wait.Until(d => d.Url.Contains("/Home/Report"));
+            Assert.That(navigated, Is.True, "Did not navigate to Report View.");
+        }
         [Then("the user should see the result view")]
         public void ThenTheUserShouldSeeTheResultView()
         {
@@ -93,6 +107,23 @@ namespace BDD_Tests.StepDefinitions
             button.Click();
 
             wait.Until(d => d.FindElement(By.Id("reportContainer"))); // Wait for report
+        }
+        private async Task WaitUntilAvailable(string url, int timeoutSeconds = 15)
+        {
+            using var client = new HttpClient();
+            var start = DateTime.Now;
+            while ((DateTime.Now - start).TotalSeconds < timeoutSeconds){
+                try{
+                    var response = await client.GetAsync(url);
+                    if (response.IsSuccessStatusCode){
+                        return;
+                    }
+                }catch{
+                    // Server not up
+                }
+                await Task.Delay(500);
+            }
+            throw new Exception($"Timed out waiting for local HTML server at {url}");
         }
     }
 }

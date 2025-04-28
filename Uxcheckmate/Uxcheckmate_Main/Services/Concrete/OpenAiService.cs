@@ -126,6 +126,95 @@ namespace Uxcheckmate_Main.Services
             string formattedData = sb.ToString();
             return formattedData;
         }
+        
+        public async Task<string> ImproveMessageAsync(string rawMessage, string categoryName)
+        {
 
+            string prompt = $@"
+        You're a UX Expert specializing in heuristic UX principles.
+        Here is a raw analysis message for the category '{categoryName}':
+        '{rawMessage}'
+
+        Improve upon this message by rewriting it and explaining why the user needs to change the findings based on heuristic UX principles.
+        Do this in under 400 words. Each message should be declarative and begin with 'Our analysis found '.
+        Do not include quotation marks at the beginning and end of your response.";
+
+            // Construct the OpenAI API request using the chat completion format
+            var request = new
+            {
+                model = "gpt-4",
+                messages = new[]
+                {
+                    new { role = "system", content = "You are a UX expert and writer." },
+                    new { role = "user", content = prompt }
+                },
+                max_tokens = 800 // Limit the response to roughly a paragraph (around 400 words)
+            };
+
+            // Serialize the request object into JSON for the HTTP request body
+            var json = JsonSerializer.Serialize(request);
+            var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+            // Send the POST request to OpenAI's chat completion endpoint
+            var response = await _httpClient.PostAsync("https://api.openai.com/v1/chat/completions", content);
+
+            // Read the raw JSON response as a string
+            var responseString = await response.Content.ReadAsStringAsync();
+
+            // Configure the JSON deserializer to be case-insensitive to handle OpenAI's response format
+            var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+
+            // Deserialize the OpenAI response into a strongly typed object
+            var result = JsonSerializer.Deserialize<OpenAiResponse>(responseString, options);
+
+            // Extract the actual AI-generated content, or fall back to the original message if it's missing
+            return result?.Choices?.FirstOrDefault()?.Message?.Content ?? rawMessage;
+        }
+
+        public async Task<string> GenerateReportSummaryAsync(List<DesignIssue> issues, string html, string url)
+        {
+            if (issues == null || !issues.Any())
+            {
+                return "No significant design issues were found on this website.";
+            }
+
+            var sb = new StringBuilder();
+            foreach (var issue in issues)
+            {
+                sb.AppendLine($"- [{issue.Category?.Name ?? "Unknown"}] {issue.Message}");
+            }
+
+            string prompt = $@"
+                You are a senior UX expert and web designer summarizing a design audit.
+                The audit was run on: {url}
+                Here is the site content: {html}
+
+                Here are the issues that were found through analysis:
+                {sb}
+
+                Write a summary of the issues found as well as additional advice and/or recommendations that might have been missed in the analysis. Do this in under 200 words.";
+
+            var request = new
+            {
+                model = "gpt-4",
+                messages = new[]
+                {
+                    new { role = "system", content = "You are a UX analyst and web designer who writes professional design summaries." },
+                    new { role = "user", content = prompt }
+                },
+                max_tokens = 800
+            };
+
+            var json = JsonSerializer.Serialize(request);
+            var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+            var response = await _httpClient.PostAsync("https://api.openai.com/v1/chat/completions", content);
+            var responseString = await response.Content.ReadAsStringAsync();
+
+            var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+            var result = JsonSerializer.Deserialize<OpenAiResponse>(responseString, options);
+
+            return result?.Choices?.FirstOrDefault()?.Message?.Content ?? "Unable to generate summary.";
+        }
     }
 }

@@ -35,6 +35,8 @@ namespace Uxcheckmate_Main.Models
         public List<string> ExternalJsLinks { get; set; }
         public List<string> ExternalCssContents { get; set; }
         public List<string> ExternalJsContents { get; set; }
+        public List<HtmlElement> LayoutElements { get; set; } = new();
+
 
         public Dictionary<string, object> ToDictionary()
         {
