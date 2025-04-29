@@ -32,51 +32,51 @@ document.addEventListener("DOMContentLoaded", function () {
         urlInputField.value = urlInput;
         console.log("Normalized URL:", urlInput);
 
-        // Ensure domain extension
-        if (!urlInput || !/\.[a-z]{2,}/.test(urlInput)) {
-            console.warn("Validation failed");
-            return false; 
-        }
+        // // Ensure domain extension
+        // if (!urlInput || !/\.[a-z]{2,}/.test(urlInput)) {
+        //     console.warn("Validation failed");
+        //     return false; 
+        // }
 
-        try {
-            // Make an AJAX call to the screenshot API endpoint
-            console.log("Sending POST to /api/screenshot");
-            const res = await fetch('/api/screenshot', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+        // try {
+        //     // Make an AJAX call to the screenshot API endpoint
+        //     console.log("Sending POST to /api/screenshot");
+        //     const res = await fetch('/api/screenshot', {
+        //         method: 'POST',
+        //         headers: { 'Content-Type': 'application/json' },
 
-                body: JSON.stringify({ Url: urlInput })
-            });
+        //         body: JSON.stringify({ Url: urlInput })
+        //     });
 
-            console.log("Screenshot API response status:", res.status);
+        //     console.log("Screenshot API response status:", res.status);
 
-            // If the API failed read and log the error response
-            if (!res.ok) {
-                const errorText = await res.text();
-                console.error("Screenshot error:", errorText);
-                return false;
-            }
+        //     // If the API failed read and log the error response
+        //     if (!res.ok) {
+        //         const errorText = await res.text();
+        //         console.error("Screenshot error:", errorText);
+        //         return false;
+        //     }
 
-            // Get the base64 screenshot string from the response
-            const base64Screenshot = await res.text();
-            console.log("🖼 Screenshot received (base64 length):", base64Screenshot.length);
+        //     // Get the base64 screenshot string from the response
+        //     const base64Screenshot = await res.text();
+        //     console.log("🖼 Screenshot received (base64 length):", base64Screenshot.length);
 
-            // Find the image element inside the loader and inject the screenshot
-            const previewImage = document.getElementById('screenshotPreview');
-            if (previewImage) {
-                previewImage.src = base64Screenshot; 
-                previewImage.alt = `Screenshot of ${urlInput}`; 
-                // Set CSS transition class
-                previewImage.classList.add('loaded');
-            }
+        //     // Find the image element inside the loader and inject the screenshot
+        //     const previewImage = document.getElementById('screenshotPreview');
+        //     if (previewImage) {
+        //         previewImage.src = base64Screenshot; 
+        //         previewImage.alt = `Screenshot of ${urlInput}`; 
+        //         // Set CSS transition class
+        //         previewImage.classList.add('loaded');
+        //     }
 
-            // Trigger transition to the loading overlay and auto-submit the form after a short delay
-            showScanningTransition(); 
+        //     // Trigger transition to the loading overlay and auto-submit the form after a short delay
+        //     showScanningTransition(); 
 
-        } catch (err) {
-            // If the fetch call fails 
-            console.error("AJAX failed:", err);
-        }
+        // } catch (err) {
+        //     // If the fetch call fails 
+        //     console.error("AJAX failed:", err);
+        // }
 
         // Prevent default form behavior regardless of success/failure
         return false;
