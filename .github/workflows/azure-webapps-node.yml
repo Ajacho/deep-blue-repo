@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
   push:
     branches:
-    - main
+    - deploy-test
 
 env:
   AZURE_WEBAPP_NAME: UxCheckmateMain
