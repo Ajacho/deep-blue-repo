@@ -46,6 +46,10 @@ jobs:
   
       # - name: Test Moq Tests
       #   run: dotnet test ./Uxcheckmate/Moq_Tests/Moq_Tests.csproj --configuration Release
+
+      - name: Verify Playwright Browser Installation
+        run: playwright show-info
+
         
       - name: Publish
         run: dotnet publish ./Uxcheckmate/Uxcheckmate.sln --configuration Release --no-build --output '${{ env.AZURE_WEBAPP_PACKAGE_PATH }}'
@@ -56,4 +60,8 @@ jobs:
           app-name: ${{ env.AZURE_WEBAPP_NAME }}
           publish-profile: ${{ secrets.AZURE_PUBLISH_PROFILE }}
           package: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
+
+      - name: List publish directory
+        run: ls -R ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
+
           
