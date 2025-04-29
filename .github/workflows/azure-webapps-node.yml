@@ -32,16 +32,22 @@ jobs:
       - name: Build
         run: dotnet build ./Uxcheckmate/Uxcheckmate.sln --configuration Release --no-restore
 
+      - name: Publish
+        run: dotnet publish ./Uxcheckmate/Uxcheckmate.sln --configuration Release --no-build --output '${{ env.AZURE_WEBAPP_PACKAGE_PATH }}'
+
+
       - name: Setup Playwright CLI
+        working-directory: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
         run: |
           dotnet new tool-manifest
           dotnet tool install Microsoft.Playwright.CLI
 
       - name: Install Playwright Browsers
-        run: dotnet playwright install --project ./Uxcheckmate/Uxcheckmate_Main/Uxcheckmate_Main.csproj
-
-      - name: Publish
-        run: dotnet publish ./Uxcheckmate/Uxcheckmate.sln --configuration Release --no-build --output '${{ env.AZURE_WEBAPP_PACKAGE_PATH }}'
+        working-directory: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
+        run: dotnet tool run playwright install
+        
+      # - name: Publish
+      #   run: dotnet publish ./Uxcheckmate/Uxcheckmate.sln --configuration Release --no-build --output '${{ env.AZURE_WEBAPP_PACKAGE_PATH }}'
 
       - name: Deployment
         uses: azure/webapps-deploy@v2
