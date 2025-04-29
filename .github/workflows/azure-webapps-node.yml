@@ -49,6 +49,13 @@ jobs:
         run: |
           cd ./Uxcheckmate/Uxcheckmate_Main
           npx playwright install --with-deps
+
+      - name: Copy Playwright Browsers to publish directory
+        run: |
+          mkdir -p '${{ env.AZURE_WEBAPP_PACKAGE_PATH }}/playwright'
+          cp -r ./Uxcheckmate/Uxcheckmate_Main/node_modules '${{ env.AZURE_WEBAPP_PACKAGE_PATH }}/playwright/node_modules'
+          cp ./Uxcheckmate/Uxcheckmate_Main/package.json '${{ env.AZURE_WEBAPP_PACKAGE_PATH }}/playwright/package.json'
+
         
       # - name: Publish
       #   run: dotnet publish ./Uxcheckmate/Uxcheckmate.sln --configuration Release --no-build --output '${{ env.AZURE_WEBAPP_PACKAGE_PATH }}'
