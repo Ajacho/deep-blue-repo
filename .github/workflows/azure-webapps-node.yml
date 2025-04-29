@@ -35,8 +35,9 @@ jobs:
         
       # Install Playwright browsers
       - name: Install Playwright Browsers (for .NET)
-        run: pwsh ./Uxcheckmate/Uxcheckmate_Main/bin/Release/net9.0/playwright.ps1 install
-
+      #   run: pwsh ./Uxcheckmate/Uxcheckmate_Main/bin/Release/net9.0/playwright.ps1 install
+        run: dotnet playwright install --project ./Uxcheckmate/Uxcheckmate_Main/Uxcheckmate_Main.csproj
+  
       # - name: Test Moq Tests
       #   run: dotnet test ./Uxcheckmate/Moq_Tests/Moq_Tests.csproj --configuration Release
         
