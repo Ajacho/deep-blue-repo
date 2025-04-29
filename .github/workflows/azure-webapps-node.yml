@@ -35,16 +35,20 @@ jobs:
       - name: Publish
         run: dotnet publish ./Uxcheckmate/Uxcheckmate.sln --configuration Release --no-build --output '${{ env.AZURE_WEBAPP_PACKAGE_PATH }}'
 
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 'lts/*'
 
-      - name: Setup Playwright CLI
-        working-directory: ./Uxcheckmate/Uxcheckmate_Main
+      - name: Install Playwright
         run: |
-          dotnet new tool-manifest
-          dotnet tool install Microsoft.Playwright.CLI
+          cd ./Uxcheckmate/Uxcheckmate_Main
+          npm install playwright
 
       - name: Install Playwright Browsers
-        working-directory: ./Uxcheckmate/Uxcheckmate_Main
-        run: dotnet tool run playwright install
+        run: |
+          cd ./Uxcheckmate/Uxcheckmate_Main
+          npx playwright install --with-deps
         
       # - name: Publish
       #   run: dotnet publish ./Uxcheckmate/Uxcheckmate.sln --configuration Release --no-build --output '${{ env.AZURE_WEBAPP_PACKAGE_PATH }}'
