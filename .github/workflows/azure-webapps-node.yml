@@ -37,13 +37,13 @@ jobs:
 
 
       - name: Setup Playwright CLI
-        working-directory: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
+        working-directory: ./Uxcheckmate/Uxcheckmate_Main
         run: |
           dotnet new tool-manifest
           dotnet tool install Microsoft.Playwright.CLI
 
       - name: Install Playwright Browsers
-        working-directory: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
+        working-directory: ./Uxcheckmate/Uxcheckmate_Main
         run: dotnet tool run playwright install
         
       # - name: Publish
