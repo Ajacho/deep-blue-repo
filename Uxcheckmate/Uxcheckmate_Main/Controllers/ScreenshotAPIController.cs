@@ -24,7 +24,7 @@ namespace Uxcheckmate_Main.Controllers
             var screenshot = await _screenshotService.CaptureScreenshot(new Microsoft.Playwright.PageScreenshotOptions(), model.Url);
 
             if (string.IsNullOrEmpty(screenshot))
-                return "InternalServerError("Failed to capture screenshot.");
+                return Ok(new { message = "Internal Error while capturing screenshot.", success = false });
 
             return Ok(screenshot); // returns base64 string
         }
