@@ -48,7 +48,7 @@ jobs:
       #   run: dotnet test ./Uxcheckmate/Moq_Tests/Moq_Tests.csproj --configuration Release
 
       - name: Verify Playwright Browser Installation
-        run: playwright show-info
+        run: dotnet playwright show-info --project ./Uxcheckmate/Uxcheckmate_Main/Uxcheckmate_Main.csproj
 
         
       - name: Publish
