@@ -32,11 +32,12 @@ namespace Uxcheckmate_Main.Services
             {
                 _browser = await _playwright.Chromium.LaunchAsync(new BrowserTypeLaunchOptions
                 {
-                    Headless = true // Launch the browser in headless mode
+                    Headless = true, // Launch the browser in headless mode
                     Args = new[] {         
                         "--disable-gpu",
                         "--no-sandbox",
-                        "--disable-dev-shm-usage" } // Additional arguments for the browser
+                        "--disable-dev-shm-usage" 
+                        } // Additional arguments for the browser
                 });
                 _logger.LogInformation("Playwright browser instance created.");
             }
