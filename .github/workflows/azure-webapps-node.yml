@@ -33,7 +33,10 @@ jobs:
         run: dotnet build ./Uxcheckmate/Uxcheckmate.sln --configuration Release --no-restore
 
       - name: Install Playwright CLI tool
-        run: dotnet tool install --global Microsoft.Playwright.CLI
+        run: |
+            dotnet new tool-manifest --force
+            dotnet tool install Microsoft.Playwright.CLI
+
 
       - name: Install Playwright Browsers
         run: |
