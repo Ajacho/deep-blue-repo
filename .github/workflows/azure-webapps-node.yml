@@ -7,7 +7,7 @@ on:
     - deploy-test
 
 env:
-  AZURE_WEBAPP_NAME: UxCheckmateMain
+  AZURE_WEBAPP_NAME: DBUxCheckmateMain
   AZURE_WEBAPP_PACKAGE_PATH: "./publish"
   DB_STRING_SECRET: ${{ secrets.DB_STRING_SECRET }}
 
