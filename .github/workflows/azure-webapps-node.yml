@@ -43,6 +43,9 @@ jobs:
       - name: Publish
         run: dotnet publish ./Uxcheckmate/Uxcheckmate_Main/Uxcheckmate_Main.csproj --configuration Release --output '${{ env.AZURE_WEBAPP_PACKAGE_PATH }}'
 
+      - name: Copy Playwright installer
+        run: cp ./Uxcheckmate/Uxcheckmate_Main/bin/Release/net9.0/playwright.ps1 ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
+
       - name: Deployment
         uses: azure/webapps-deploy@v2
         with:
