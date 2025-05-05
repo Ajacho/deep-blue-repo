@@ -32,20 +32,16 @@ jobs:
         
       - name: Build
         run: dotnet build ./Uxcheckmate/Uxcheckmate.sln --configuration Release --no-restore
-        
-      # Install Playwright browsers
-      - name: Install Playwright Browsers (for .NET)
-        run: pwsh ./Uxcheckmate/Uxcheckmate_Main/bin/Release/net9.0/playwright.ps1 install
+
+      - name: Publish (before installing Playwright)
+        run: dotnet publish ./Uxcheckmate/Uxcheckmate_Main/Uxcheckmate_Main.csproj --configuration Release --output '${{ env.AZURE_WEBAPP_PACKAGE_PATH }}'
+
+      - name: Install Playwright Browsers into Published Output
+        run: pwsh '${{ env.AZURE_WEBAPP_PACKAGE_PATH }}/playwright.ps1' install
 
       # - name: Test Moq Tests
       #   run: dotnet test ./Uxcheckmate/Moq_Tests/Moq_Tests.csproj --configuration Release
         
-      - name: Publish
-        run: dotnet publish ./Uxcheckmate/Uxcheckmate_Main/Uxcheckmate_Main.csproj --configuration Release --output '${{ env.AZURE_WEBAPP_PACKAGE_PATH }}'
-
-      - name: Copy Playwright installer
-        run: cp ./Uxcheckmate/Uxcheckmate_Main/bin/Release/net9.0/playwright.ps1 ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
-
       - name: Deployment
         uses: azure/webapps-deploy@v2
         with:
