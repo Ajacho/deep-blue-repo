@@ -1,51 +1,51 @@
-name: Publish 🚀
+# name: Publish 🚀
 
-on:
-  workflow_dispatch:
-  push:
-    branches:
-    - deploy-test
+# on:
+#   workflow_dispatch:
+#   push:
+#     branches:
+#     - deploy-test
 
-env:
-  AZURE_WEBAPP_NAME: DBUxCheckmateMain
-  AZURE_WEBAPP_PACKAGE_PATH: "./publish"
-  DB_STRING_SECRET: ${{ secrets.DB_STRING_SECRET }}
+# env:
+#   AZURE_WEBAPP_NAME: DBUxCheckmateMain
+#   AZURE_WEBAPP_PACKAGE_PATH: "./publish"
+#   DB_STRING_SECRET: ${{ secrets.DB_STRING_SECRET }}
 
-permissions:
-  contents: read
+# permissions:
+#   contents: read
 
 
-jobs:
-  publish:
-    runs-on: ubuntu-latest
+# jobs:
+#   publish:
+#     runs-on: ubuntu-latest
     
-    steps:
-      - uses: actions/checkout@v3
+#     steps:
+#       - uses: actions/checkout@v3
       
-      - name: Setup .NET
-        uses: actions/setup-dotnet@v3
-        with:
-          dotnet-version: '9.0.x'
+#       - name: Setup .NET
+#         uses: actions/setup-dotnet@v3
+#         with:
+#           dotnet-version: '9.0.x'
           
-      - name: Restore
-        run: dotnet restore ./Uxcheckmate/Uxcheckmate.sln
+#       - name: Restore
+#         run: dotnet restore ./Uxcheckmate/Uxcheckmate.sln
         
-      - name: Build
-        run: dotnet build ./Uxcheckmate/Uxcheckmate.sln --configuration Release --no-restore
+#       - name: Build
+#         run: dotnet build ./Uxcheckmate/Uxcheckmate.sln --configuration Release --no-restore
 
-      - name: Publish (before installing Playwright)
-        run: dotnet publish ./Uxcheckmate/Uxcheckmate_Main/Uxcheckmate_Main.csproj --configuration Release --output '${{ env.AZURE_WEBAPP_PACKAGE_PATH }}'
+#       - name: Publish (before installing Playwright)
+#         run: dotnet publish ./Uxcheckmate/Uxcheckmate_Main/Uxcheckmate_Main.csproj --configuration Release --output '${{ env.AZURE_WEBAPP_PACKAGE_PATH }}'
 
-      - name: Install Playwright Browsers into Published Output
-        run: pwsh '${{ env.AZURE_WEBAPP_PACKAGE_PATH }}/playwright.ps1' install
+#       - name: Install Playwright Browsers into Published Output
+#         run: pwsh '${{ env.AZURE_WEBAPP_PACKAGE_PATH }}/playwright.ps1' install
 
-      # - name: Test Moq Tests
-      #   run: dotnet test ./Uxcheckmate/Moq_Tests/Moq_Tests.csproj --configuration Release
+#       # - name: Test Moq Tests
+#       #   run: dotnet test ./Uxcheckmate/Moq_Tests/Moq_Tests.csproj --configuration Release
         
-      - name: Deployment
-        uses: azure/webapps-deploy@v2
-        with:
-          app-name: ${{ env.AZURE_WEBAPP_NAME }}
-          publish-profile: ${{ secrets.AZURE_PUBLISH_PROFILE }}
-          package: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
+#       - name: Deployment
+#         uses: azure/webapps-deploy@v2
+#         with:
+#           app-name: ${{ env.AZURE_WEBAPP_NAME }}
+#           publish-profile: ${{ secrets.AZURE_PUBLISH_PROFILE }}
+#           package: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
           
