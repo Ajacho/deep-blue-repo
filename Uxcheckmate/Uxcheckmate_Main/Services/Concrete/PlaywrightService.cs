@@ -30,10 +30,19 @@ namespace Uxcheckmate_Main.Services
             // Check if browser instance is null, if so, create a new instance
             if (_browser == null)
             {
-                _browser = await _playwright.Chromium.LaunchAsync(new BrowserTypeLaunchOptions
+            _browser = await _playwright.Chromium.LaunchAsync(new BrowserTypeLaunchOptions
+            {
+                Headless = true,
+                // Use the path to the Chromium executable in Azure App Service
+                ExecutablePath = "/home/site/wwwroot/.playwright/chromium/chrome-linux/chrome",
+                Args = new[]
                 {
-                    Headless = true // Launch the browser in headless mode
-                });
+                    "--disable-gpu",
+                    "--no-sandbox",
+                    "--disable-dev-shm-usage"
+                }
+            });
+
                 _logger.LogInformation("Playwright browser instance created.");
             }
 
