@@ -21,12 +21,32 @@ namespace Uxcheckmate_Main.Controllers
             if (string.IsNullOrWhiteSpace(model.Url))
                 return BadRequest("URL is required.");
 
-            var screenshot = await _screenshotService.CaptureScreenshot(new Microsoft.Playwright.PageScreenshotOptions(), model.Url);
+            try
+            {
+                var screenshot = await _screenshotService.CaptureScreenshot(
+                    new Microsoft.Playwright.PageScreenshotOptions(),
+                    model.Url
+                );
 
-            if (string.IsNullOrEmpty(screenshot))
-                return StatusCode(500, "Failed to capture screenshot.");
+                if (string.IsNullOrEmpty(screenshot))
+                    return StatusCode(500, "Failed to capture screenshot.");
 
-            return Ok(screenshot); // returns base64 string
+                return Ok(screenshot); // returns base64 string
+            }
+            catch (Exception ex)
+            {
+                // Log to console or any logging service
+                Console.Error.WriteLine("Screenshot error: " + ex.Message);
+                Console.Error.WriteLine("Stack trace: " + ex.StackTrace);
+
+                return StatusCode(500, new
+                {
+                    error = "Screenshot failed",
+                    message = ex.Message,
+                    stack = ex.StackTrace
+                });
+            }
         }
+
     }
 }
