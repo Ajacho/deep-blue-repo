@@ -35,8 +35,8 @@ jobs:
       - name: Install missing Linux dependencies for Playwright
         run: npx playwright install-deps
 
-      - name: Install Playwright Browsers
-        run: npx playwright install
+      - name: Install Playwright v1.50.0
+        run: npm install playwright@1.50.0 && npx playwright install
 
       - name: Publish
         run: dotnet publish ./Uxcheckmate/Uxcheckmate_Main/Uxcheckmate_Main.csproj --configuration Release --output '${{ env.AZURE_WEBAPP_PACKAGE_PATH }}'
