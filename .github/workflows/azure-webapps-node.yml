@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
   push:
     branches:
-    - deploy-test
+      - deploy-test
 
 env:
   AZURE_WEBAPP_NAME: DBUxCheckmateMain
@@ -14,43 +14,41 @@ env:
 permissions:
   contents: read
 
-
 jobs:
   publish:
     runs-on: ubuntu-latest
-    
+
     steps:
       - uses: actions/checkout@v3
-      
+
       - name: Setup .NET
         uses: actions/setup-dotnet@v3
         with:
           dotnet-version: '9.0.x'
-          
+
       - name: Restore
         run: dotnet restore ./Uxcheckmate/Uxcheckmate.sln
-        
+
       - name: Build
         run: dotnet build ./Uxcheckmate/Uxcheckmate.sln --configuration Release --no-restore
 
-      - name: Publish (before installing Playwright)
+      - name: Install missing Linux dependencies for Playwright
+        run: npx playwright install-deps
+
+      - name: Install Playwright Browsers
+        run: npx playwright install
+
+      - name: Publish
         run: dotnet publish ./Uxcheckmate/Uxcheckmate_Main/Uxcheckmate_Main.csproj --configuration Release --output '${{ env.AZURE_WEBAPP_PACKAGE_PATH }}'
 
-      - name: Install missing Linux dependencies for Playwright
+      - name: Copy Playwright Browsers to publish folder
         run: |
-          npx playwright install-deps
+          mkdir -p '${{ env.AZURE_WEBAPP_PACKAGE_PATH }}/playwright/.cache'
+          cp -r ~/.cache/ms-playwright '${{ env.AZURE_WEBAPP_PACKAGE_PATH }}/playwright/.cache/ms-playwright'
 
-
-      - name: Install Playwright Browsers into Published Output
-        run: pwsh '${{ env.AZURE_WEBAPP_PACKAGE_PATH }}/playwright.ps1' install
-
-      # - name: Test Moq Tests
-      #   run: dotnet test ./Uxcheckmate/Moq_Tests/Moq_Tests.csproj --configuration Release
-        
       - name: Deployment
         uses: azure/webapps-deploy@v2
         with:
           app-name: ${{ env.AZURE_WEBAPP_NAME }}
           publish-profile: ${{ secrets.AZURE_PUBLISH_PROFILE }}
           package: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
-          
