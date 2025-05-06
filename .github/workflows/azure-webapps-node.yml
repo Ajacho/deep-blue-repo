@@ -33,18 +33,52 @@ jobs:
         run: dotnet build ./Uxcheckmate/Uxcheckmate.sln --configuration Release --no-restore
 
       - name: Install missing Linux dependencies for Playwright
-        run: npx playwright install-deps
+        run: |
+          echo "🔧 Installing Playwright Linux dependencies..."
+          npx playwright install-deps
+        env:
+          DEBUG: pw:*
+
+      - name: Checkpoint:Linux dependencies installed
+        run: echo "✅ Playwright Linux dependencies installed successfully."
 
       - name: Install Playwright v1.50.0
-        run: npm install playwright@1.50.0 && npx playwright install
+        run: |
+          echo "📦 Installing Playwright v1.50.0..."
+          npm install playwright@1.50.0
+          npx playwright install
+        env:
+          DEBUG: pw:*
+
+      - name: Checkpoint:Playwright install complete
+        run: echo "✅ Playwright installed and browsers set up."
+
+      - name: Verify Playwright Installation
+        run: |
+          echo "🧪 Verifying Playwright installation..."
+          if ! [ -x "$(command -v npx)" ]; then
+            echo '❌ Error: npx is not installed.' >&2
+            exit 1
+          fi
+          npx playwright --version
 
       - name: Publish
         run: dotnet publish ./Uxcheckmate/Uxcheckmate_Main/Uxcheckmate_Main.csproj --configuration Release --output '${{ env.AZURE_WEBAPP_PACKAGE_PATH }}'
 
       - name: Copy Playwright Browsers to publish folder
         run: |
+          echo "📁 Copying Playwright browsers to publish folder..."
           mkdir -p '${{ env.AZURE_WEBAPP_PACKAGE_PATH }}/playwright/.cache'
           cp -r ~/.cache/ms-playwright '${{ env.AZURE_WEBAPP_PACKAGE_PATH }}/playwright/.cache/ms-playwright'
+
+      - name: Check copied browser binaries
+        run: |
+          echo "🔍 Checking if Playwright browsers exist in publish folder..."
+          if [ -d "${{ env.AZURE_WEBAPP_PACKAGE_PATH }}/playwright/.cache/ms-playwright" ]; then
+            echo "✅ Browser binaries copied successfully."
+          else
+            echo "❌ Browser binaries missing!" && exit 1
+          fi
 
       - name: Deployment
         uses: azure/webapps-deploy@v2
