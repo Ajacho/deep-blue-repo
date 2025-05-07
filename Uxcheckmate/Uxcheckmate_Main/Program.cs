@@ -23,12 +23,6 @@ public class Program
 
         var builder = WebApplication.CreateBuilder(args);
 
-        // Set Playwright browsers path
-        Environment.SetEnvironmentVariable("PLAYWRIGHT_BROWSERS_PATH", "/home/.cache");
-
-        // Ensure Playwright dependecies are installed
-        System.Diagnostics.Process.Start("npx", "playwright install")?.WaitForExit();
-
 
         string openAiApiKey = builder.Configuration["OpenAiApiKey"];
         string openAiUrl = "https://api.openai.com/v1/chat/completions";
