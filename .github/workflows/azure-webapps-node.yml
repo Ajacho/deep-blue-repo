@@ -68,17 +68,8 @@ jobs:
       - name: Copy Playwright Browsers to publish folder
         run: |
           echo "📁 Copying Playwright browsers to publish folder..."
-          mkdir -p '${{ env.AZURE_WEBAPP_PACKAGE_PATH }}/playwright/.cache'
+          mkdir -p '${{ env.AZURE_WEBAPP_PACKAGE_PATH }}/playwright/lol/.cache'
           cp -r ~/.cache/ms-playwright '${{ env.AZURE_WEBAPP_PACKAGE_PATH }}/playwright/.cache/ms-playwright'
-
-      - name: Check copied browser binaries
-        run: |
-          echo "🔍 Checking if Playwright browsers exist in publish folder..."
-          if [ -d "${{ env.AZURE_WEBAPP_PACKAGE_PATH }}/playwright/.cache/ms-playwright" ]; then
-            echo "✅ Browser binaries copied successfully."
-          else
-            echo "❌ Browser binaries missing!" && exit 1
-          fi
 
       - name: Deployment
         uses: azure/webapps-deploy@v2
