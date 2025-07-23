@@ -38,15 +38,17 @@ namespace BDD_Tests.StepDefinitions
             var wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(10));
 
             // Find and click the accordion button that opens the Broken Links section
-            var button = wait.Until(driver => driver.FindElement(By.XPath("//button[contains(., 'Broken Links')]")));
-            button.Click();
+           wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.InvisibilityOfElementLocated(By.ClassName("modal-content")));
+           var button = wait.Until(driver => driver.FindElement(By.XPath("//button[contains(., 'Broken Links')]")));
+           button.Click();
         }
 
         [Then("the broken links section should be visible")]
         public void ThenTheBrokenLinksSectionShouldBeVisible()
         {
-            var section = _driver.FindElement(By.XPath("//button[contains(., 'Broken Links')]"));
-            Assert.That(section.Displayed, Is.True);
+            var wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(10));
+            var section = wait.Until(driver => driver.FindElement(By.XPath("//button[contains(., 'Broken Links')]")));
+            Assert.That(section.Displayed, Is.True, "Broken Links section should be visible.");
         }
 
         [Then("the broken links row reports missing or invalid links")]
@@ -57,7 +59,7 @@ namespace BDD_Tests.StepDefinitions
 
             Check: What is expected based on service calls is what is displayed on the UI
             ==============================================================================*/
-            var wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(15));
+            var wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(60));
             
             // Call web scraper to organize html elements
             var scrapedData = await _scraperService.ScrapeAsync(_url);

@@ -91,23 +91,33 @@ namespace BDD_Tests.StepDefinitions
         [Then("they should not see the modal pop up again")]
         public void GivenTheyShouldNotSeeTheModalPopUpAgain()
         {
-            var wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(300));
-            // find modal
-            var summary = wait.Until(driver => driver.FindElement(By.Id("onLoadModal")));
-
-            // assert that modal is not visible
-            Assert.That(summary.Displayed, Is.False, "Modal should not be visible");
+            var modalElements = _driver.FindElements(By.Id("onLoadModal"));
+            if (modalElements.Count == 0){
+                Assert.Pass("Modal is not present in DOM, as expected.");
+            }
+            var modal = modalElements[0];
+            var classAttr = modal.GetAttribute("class");
+            Assert.That(classAttr.Contains("show"), Is.False, "Modal should not be visible");
         }
-
         [Then("the user clicks the summary button")]
         public void ThenTheUserClicksTheSummaryButton()
         {
-            var wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(300));
-
-            // find button
-            var summaryBtn = wait.Until(driver => driver.FindElement(By.Id("viewSummaryBtn")));
-            
-            // click up button
+            var wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(10));
+            wait.Until(driver =>
+            {
+                try
+                {
+                    var modal = driver.FindElement(By.Id("onLoadModal"));
+                    var style = modal.GetAttribute("style") ?? "";
+                    var classAttr = modal.GetAttribute("class") ?? "";
+                    return style.Contains("display: none") || !classAttr.Contains("show");
+                }
+                catch (NoSuchElementException)
+                {
+                    return true;
+                }
+            });
+            var summaryBtn = wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.ElementToBeClickable(By.Id("viewSummaryBtn")));
             summaryBtn.Click();
         }
     }

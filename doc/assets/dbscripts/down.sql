@@ -1,8 +1,12 @@
-ALTER TABLE [Reports] DROP CONSTRAINT FK_Reports_UserID;
-ALTER TABLE [Reports] DROP CONSTRAINT FK_Reports_CategoryID;
-ALTER TABLE [UserAccounts] DROP CONSTRAINT FK_UserAccounts_RoleID;
+BEGIN TRANSACTION;
 
-DROP TABLE [Reports];
-DROP TABLE [ReportCategories];
-DROP TABLE [UserAccounts];
-DROP TABLE [Roles];
+DROP TABLE IF EXISTS [__EFMigrationsHistory];
+DROP TABLE IF EXISTS [Report];
+DROP TABLE IF EXISTS [DesignCategory];
+DROP TABLE IF EXISTS [AccessibilityCategory];
+DROP TABLE IF EXISTS [DesignIssue];
+DROP TABLE IF EXISTS [AccessibilityIssue];
+DROP TABLE IF EXISTS [FontLegibility];
+DROP TABLE IF EXISTS [UserFeedbacks];
+
+COMMIT;

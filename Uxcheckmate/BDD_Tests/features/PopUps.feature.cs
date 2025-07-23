@@ -84,12 +84,14 @@ namespace BDD_Tests.Features
         
         [NUnit.Framework.TestAttribute()]
         [NUnit.Framework.DescriptionAttribute("User expands the Pop-Ups section and sees detected issues")]
+        [NUnit.Framework.CategoryAttribute("PopUps")]
         public async System.Threading.Tasks.Task UserExpandsThePop_UpsSectionAndSeesDetectedIssues()
         {
-            string[] tagsOfScenario = ((string[])(null));
+            string[] tagsOfScenario = new string[] {
+                    "PopUps"};
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
             global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("User expands the Pop-Ups section and sees detected issues", null, tagsOfScenario, argumentsOfScenario, featureTags);
-#line 4
+#line 5
   this.ScenarioInitialize(scenarioInfo);
 #line hidden
             if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
@@ -99,20 +101,17 @@ namespace BDD_Tests.Features
             else
             {
                 await this.ScenarioStartAsync();
-#line 5
+#line 6
     await testRunner.GivenAsync("the user has generated a report for \"https://momkage-lexy.github.io/\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Given ");
 #line hidden
-#line 6
+#line 7
     await testRunner.ThenAsync("the user clicks the let\'s begin button", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
 #line hidden
-#line 7
+#line 8
     await testRunner.WhenAsync("the user clicks the Pop Ups section", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
 #line hidden
-#line 8
-    await testRunner.ThenAsync("the Pop Ups section should be visible", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
-#line hidden
 #line 9
-    await testRunner.AndAsync("the pop ups row reports all detected pop ups", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
+    await testRunner.ThenAsync("the Pop Ups section should be visible", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
 #line hidden
             }
             await this.ScenarioCleanupAsync();

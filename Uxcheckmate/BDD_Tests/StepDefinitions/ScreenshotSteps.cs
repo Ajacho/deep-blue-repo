@@ -40,10 +40,13 @@ namespace BDD_Tests.StepDefinitions
         [Then("the user will see a screenshot of their website")]
         public void ThenUserSeesReportWithScreenshot()
         {
-            Assert.That(driver.Url, Does.Contain("/Home/Report"), "Did not navigate to Report View.");
-            Assert.That(driver.PageSource.Contains("Report"), Is.True, "Expected content not found on result view.");
-            Assert.That(driver.PageSource.Contains("websiteScreenshot"), Is.True, "Expected screenshot not found on report view.");
+            var wait = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
+            var screenshotImage = wait.Until(d => d.FindElement(By.Id("screenshotImage")));
+            string src = screenshotImage.GetAttribute("src");
+            Assert.That(src, Is.Not.Null.And.Not.Empty, "Screenshot src is missing.");
+            Assert.That(src, Does.StartWith("data:image/"), "Screenshot src is not a base64 image.");
         }
+
 
     }
 }

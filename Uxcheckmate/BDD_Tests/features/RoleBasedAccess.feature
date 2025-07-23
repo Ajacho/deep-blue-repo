@@ -1,14 +1,15 @@
 Feature: Role-based dashboard redirection
 
+  @RolesBasedAccess
   Scenario: Standard user visits dashboard
-    Given user is logged in as an "User"
-    When they visit the dashboard
-    Then they should see the "UserDashboard" view
-    And they should land on the correct page in browser
+    Given the user navigates to the site
+    And the user logs in
+    When they go to user dashboard
+    Then they should see user dashboard
 
+  @RolesBasedAccess
   Scenario: Admin visits dashboard
-    Given user is logged in as an "Admin"
-    When they visit the dashboard
-    Then they should see the "AdminDashboard" view
-    And they should land on the correct page in browser
-
+    Given the user navigates to the site
+    And the user logs in as admin
+    When they go to user dashboard
+    Then they should see admin dashboard

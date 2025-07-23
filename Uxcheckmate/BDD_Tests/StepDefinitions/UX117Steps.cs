@@ -24,17 +24,22 @@ namespace BDD_Tests.StepDefinitions
         [Then("the user will see a modal containing the summary")]
         public void ThenHeWillSeeAModalContainingSummary()
         {
-            var wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(300));
-    
-            // Wait for modal to be visible
-            var modal = wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.ElementIsVisible(By.Id("onLoadModal")));
-
-            // Wait specifically for the summary paragraph inside the modal
-            var summary = wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.ElementIsVisible(By.Id("summary")));
-
+            var wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(60));
+            var summary = wait.Until(driver =>
+            {
+                try
+                {
+                    var modal = driver.FindElement(By.Id("onLoadModal"));
+                    var summaryEl = modal.FindElement(By.Id("summary"));
+                    return summaryEl.Displayed && !string.IsNullOrWhiteSpace(summaryEl.Text) ? summaryEl : null;
+                }
+                catch (NoSuchElementException)
+                {
+                    return null;
+                }
+            });
             Assert.That(summary.Displayed, Is.True, "Summary should be visible inside modal.");
         }
-
         [Then("the user clicks the let's begin button")]
         public void TheUserClicksTheLetsBeginButton()
         {
@@ -44,15 +49,30 @@ namespace BDD_Tests.StepDefinitions
           //  var button = wait.Until(driver => driver.FindElement(By.Id("letsgo")));
             button.Click();
         }
-
         [Then("the modal will close")]
         public void TheModalWillClose()
         {
-            var wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(10));
-            
-            bool isInvisible = wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.InvisibilityOfElementLocated(By.Id("onLoadModal")));
-            
-            Assert.That(isInvisible, Is.True, "Modal should be closed.");
+            var wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(30));
+            wait.IgnoreExceptionTypes(typeof(NoSuchElementException));
+            bool isClosed = wait.Until(driver =>
+            {
+                try
+                {
+                    var modal = driver.FindElement(By.Id("onLoadModal"));
+                    var style = modal.GetAttribute("style") ?? "";
+                    var classAttr = modal.GetAttribute("class") ?? "";
+                    Console.WriteLine($"Modal style: {style}");
+                    Console.WriteLine($"Modal class: {classAttr}");
+                    bool styleHidden = style.Contains("display: none");
+                    bool classHidden = !classAttr.Contains("show");
+                    return styleHidden || classHidden;
+                }
+                catch (NoSuchElementException)
+                {
+                    return true;
+                }
+            });
+            Assert.That(isClosed, Is.True, "Modal should be closed or hidden.");
         }
     }
 }

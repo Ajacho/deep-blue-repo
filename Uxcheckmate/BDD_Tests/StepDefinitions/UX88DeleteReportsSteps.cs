@@ -25,6 +25,7 @@ namespace BDD_Tests.StepDefinitions
             driver = webDriver;
         }
 
+        /** 
         [Given("user is logged in")]
         public void GivenUserIsLoggedIn()
         {
@@ -67,6 +68,8 @@ namespace BDD_Tests.StepDefinitions
             Assert.That(viewResult, Is.Not.Null);
             Assert.That(viewResult.ViewName, Is.Null.Or.Empty);
         }
+
+        */
 
         [When("the user clicks on one grouped folder of one domain")]
         public void WhenUserClicksOnGroupedFolder()

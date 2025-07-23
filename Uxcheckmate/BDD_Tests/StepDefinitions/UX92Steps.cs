@@ -22,19 +22,34 @@ namespace BDD_Tests.StepDefinitions
             string feedbackUrl = role == "Admin" ? "/Admin/AdminFeedback" : "/Home/Feedback";
             if (role == "Admin")
             {
+                _driver.Navigate().GoToUrl($"{_driver.Url.Split("/")[0]}//{_driver.Url.Split("/")[2]}/Admin/AdminFeedback");
                 wait.Until(driver =>
                 {
-                    try{
-                        var feedbackLink = driver.FindElement(By.XPath($"//a[@href='{feedbackUrl}']"));
-                        feedbackLink.Click();
-                        return true;
-                    }catch{
+                    try
+                    {
+                        return driver.FindElement(By.XPath("//h1[text()='User Feedback']")).Displayed;
+                    }
+                    catch
+                    {
                         return false;
                     }
                 });
             }
             else
             {
+                wait.Until(driver =>
+                {
+                    try
+                    {
+                        var dashboardLink = driver.FindElement(By.LinkText("Dashboard"));
+                        dashboardLink.Click();
+                        return true;
+                    }
+                    catch
+                    {
+                        return false;
+                    }
+                });
                 wait.Until(driver =>
                 {
                     try

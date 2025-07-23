@@ -101,63 +101,69 @@ namespace TempIdentityProject.Areas.Identity.Pages.Account
             ViewData["CaptchaSiteKey"] = _configuration["Captcha:SiteKey"];
             returnUrl ??= Url.Content("~/");
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
-            if (string.IsNullOrEmpty(CaptchaToken) || !await _captchaService.VerifyTokenAsync(CaptchaToken))
+            var captchaEnabledSetting = _configuration["Captcha:Enabled"];
+            var captchaEnabled = string.Equals(captchaEnabledSetting, "true", StringComparison.OrdinalIgnoreCase);
+            if (captchaEnabled)
             {
-                ModelState.AddModelError(string.Empty, "Please complete the CAPTCHA to register.");
-                return Page();
+                if (string.IsNullOrEmpty(CaptchaToken) || !await _captchaService.VerifyTokenAsync(CaptchaToken))
+                {
+                    ModelState.AddModelError(string.Empty, "Please complete the CAPTCHA to register.");
+                    return Page();
+                }
             }
             if (ModelState.IsValid)
-            {
-                var user = CreateUser();
-
-                await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
-                await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
-                var result = await _userManager.CreateAsync(user, Input.Password);
-
-                if (result.Succeeded)
                 {
-                    _logger.LogInformation("User created a new account with password.");
+                    var user = CreateUser();
 
-                    var userId = await _userManager.GetUserIdAsync(user);
-                    var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-                    code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
-                    var callbackUrl = Url.Page(
-                        "/Account/ConfirmEmail",
-                        pageHandler: null,
-                        values: new { area = "Identity", userId = userId, code = code, returnUrl = returnUrl },
-                        protocol: Request.Scheme);
+                    await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
+                    await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
+                    var result = await _userManager.CreateAsync(user, Input.Password);
 
-                    await _emailSender.SendEmailAsync(Input.Email, "Confirm your email",
-                        $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
-
-                    if (_userManager.Options.SignIn.RequireConfirmedAccount)
+                    if (result.Succeeded)
                     {
-                        return RedirectToPage("RegisterConfirmation", new { email = Input.Email, returnUrl = returnUrl });
-                    }
-                    else
-                    {
-                        await _signInManager.SignInAsync(user, isPersistent: false);
+                        _logger.LogInformation("User created a new account with password.");
 
-                        if (ReportId.HasValue)
+                        var userId = await _userManager.GetUserIdAsync(user);
+                        var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+                        code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
+                        var callbackUrl = Url.Page(
+                            "/Account/ConfirmEmail",
+                            pageHandler: null,
+                            values: new { area = "Identity", userId = userId, code = code, returnUrl = returnUrl
+                            },
+                            protocol: Request.Scheme);
+
+                        await _emailSender.SendEmailAsync(Input.Email, "Confirm your email",
+                            $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+
+                        if (_userManager.Options.SignIn.RequireConfirmedAccount)
                         {
-                            var report = await _context.Reports.FindAsync(ReportId.Value);
-                            if (report != null && string.IsNullOrEmpty(report.UserID))
-                            {
-                                report.UserID = user.Id;
-                                _context.Reports.Update(report);
-                                await _context.SaveChangesAsync();
-                            }
+                            return RedirectToPage("RegisterConfirmation", new { email = Input.Email, returnUrl = returnUrl });
                         }
+                        else
+                        {
+                            await _signInManager.SignInAsync(user, isPersistent: false);
 
-                        return LocalRedirect(returnUrl);
+                            if (ReportId.HasValue)
+                            {
+                                var report = await _context.Reports.FindAsync(ReportId.Value);
+                                if (report != null && string.IsNullOrEmpty(report.UserID))
+                                {
+                                    report.UserID = user.Id;
+                                    _context.Reports.Update(report);
+                                    await _context.SaveChangesAsync();
+                                }
+                            }
+
+                            return LocalRedirect(returnUrl);
+                        }
+                    }
+
+                    foreach (var error in result.Errors)
+                    {
+                        ModelState.AddModelError(string.Empty, error.Description);
                     }
                 }
-
-                foreach (var error in result.Errors)
-                {
-                    ModelState.AddModelError(string.Empty, error.Description);
-                }
-            }
 
             // If we got this far, something failed, redisplay form
             return Page();

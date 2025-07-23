@@ -20,7 +20,7 @@ namespace Uxcheckmate.BDD_Tests.StepDefinitions
         [BeforeScenario]
         public void BeforeScenario()
         {
-            Environment.SetEnvironmentVariable("Captcha:Enabled", "false");
+            Environment.SetEnvironmentVariable("Captcha__Enabled", "false");
             if (!_scenarioContext.ContainsKey("skipServer"))
             {
                 RunTestServer.StartServer();
