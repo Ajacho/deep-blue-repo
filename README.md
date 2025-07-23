@@ -1,28 +1,31 @@
 <h1 style="text-align: center; font-size: 48;">
-<span><img src="doc\assets\uxCheckmateLogo.png" alt="uxcheckmate logo" width="20%" style="display: block, item-position:left; margin: auto;"></span>
+<span><img src="doc\assets\uxCheckmateLogo.png" alt="uxcheckmate logo" width="50" style="display: block, item-position:left; margin: auto;"></span>
 Uxcheckmate</h1>
 
 <p style="text-align: center; font-size: 1.5em;"><i>Your design companion for a better, more accessible web.</i></p>
 
 <img src="doc\assets\demo.gif" alt="demo">
 
-## Vision Statement 
+---
 
-Our vision is to create an inclusive digital culture where everyone—whether a developer, business owner, or designer—can contribute to making websites accessible, inclusive, and equitable. With 'UX Checkmate,' we make it easy for anyone to improve their websites by simply inserting a web link. Our tool helps identify areas for accessibility enhancement, offering actionable suggestions and visual mockups to guide improvements. As technology continues to advance, we aim to bridge the gap for those without technical experience, ensuring that every user, regardless of their abilities, can navigate and engage with the web seamlessly. By fostering collaboration and inclusion, we strive to make the digital world accessible to all, building a future where no one is left behind.
+## 🚀 Vision Statement
 
-<a href="doc\assets\documentation\architecture.png">System Architecture</a>
+Our vision is to create an inclusive digital culture where everyone—developers, business owners, and designers—can contribute to making websites accessible, inclusive, and equitable. We believe accessibility is a right, not a privilege.
 
-## Features
+---
 
-Our focal feature is report generation. We've created over a dozen scans to detect and flag common design issues that can negatively impact your user's experience. The report also includes an accessibility audit per WCAG 2.2 guidelines. 
+## 🧩 Features
 
-The report can be downloaded as a PDF or registered users can save within the app. 
+- **Automated Report Generation:** Over a dozen scans to detect and flag common design issues that impact user experience and accessibility.
+- **Downloadable Reports:** Save your findings as PDFs or store them online as a registered user.
+- **User Dashboard:** Access all previous reports grouped by domain, and export reported issues to Jira.
+- **Admin Tools:** Manage feedback, users, and reports from a dedicated admin dashboard.
 
-Registered users have access to a dashboard containing all their previous reports grouped by domain, with the added functionality to export all reported issues to Jira. 
+![System Architecture](doc/assets/documentation/architecture.png)
 
-Admin functionality has been included to manage all feedback, users, and their reports. 
+---
 
-## How to Use
+## 🔧 How to Use
 
 1. Fork the repository
 2. Install Playwright   
@@ -68,7 +71,7 @@ Admin functionality has been included to manage all feedback, users, and their r
 ```
 4. To add more scans to the report, add the method call to the switch statement in ```RunCustomAnalysisAsync()``` located in <a href="Uxcheckmate\Uxcheckmate_Main\Services\Concrete\ReportService.cs"> ReportService.cs</a>
 
-## <img src="doc\assets\branding\logo.png" alt="Deep Blue Logo" width="50">About Us
+## <img src="doc\assets\branding\logo.png" alt="Deep Blue Logo" width="50"> About Us
 
 ### Deep Blue
 
