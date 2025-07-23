@@ -21,7 +21,7 @@ Our vision is to create an inclusive digital culture where everyone—developers
 - **User Dashboard:** Access all previous reports grouped by domain, and export reported issues to Jira.
 - **Admin Tools:** Manage feedback, users, and reports from a dedicated admin dashboard.
 
-![System Architecture](doc/assets/documentation/architecture.png)
+<a href="doc\assets\documentation\architecture.png">System Architecture</a>
 
 ---
 
