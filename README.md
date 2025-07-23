@@ -1,5 +1,6 @@
-<img src="doc\assets\uxCheckmateLogo.png" alt="uxcheckmate logo" width="25%" style="display: block; margin: auto;">
-<h1 style="text-align: center; font-size: 48;">Uxcheckmate</h1>
+<h1 style="text-align: center; font-size: 48;">
+<span><img src="doc\assets\uxCheckmateLogo.png" alt="uxcheckmate logo" width="20%" style="display: block, item-position:left; margin: auto;"></span>
+Uxcheckmate</h1>
 
 <p style="text-align: center; font-size: 1.5em;"><i>Your design companion for a better, more accessible web.</i></p>
 
